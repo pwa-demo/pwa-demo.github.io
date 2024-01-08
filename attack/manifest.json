@@ -1,0 +1,17 @@
+{
+  "name": "Edge",
+  "short_name": "Edge",
+  "description": "Edge as a Progressive Web App",
+  "scope": "/attack/",
+  "start_url": "/attack/",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/attack/images/edge-icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

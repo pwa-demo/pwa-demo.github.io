@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starbucks</title>
+  <link rel="canonical" href="https://pwa-demo.github.io/default/" />
+  <link rel="manifest" href="/default/manifest.json">
+</head>
+
+<body>
+  <div id="permissionStatus">top-level-storage-access: Not checked yet</div>
+  <p id='permissions'></p>
+  <script>
+    for (const a of ['accelerometer', 'accessibility-events', 'ambient-light-sensor', 'background-sync', "background-fetch", 'camera', 'clipboard-read', 'clipboard-write', 'geolocation', 'gyroscope', 'magnetometer', 'microphone', 'midi', 'notifications', 'payment-handler', 'persistent-storage', 'push', "screen-wake-lock", "nfc", "display-capture", "idle-detection",
+      "periodic-background-sync",
+      "system-wake-lock",
+      "storage-access", "window-management",
+      "window-placement",
+      "local-fonts", "speaker-selection", "bluetooth"]) {
+      navigator.permissions.query({ name: a }).then(e => { document.getElementById('permissions').innerText += a + ":" + e.state + "\n" }).catch(e => { document.getElementById('permissions').innerText += a + ":" + e + "\n" })
+    }
+    async function checkPermission() {
+      try {
+        const permissionStatus = await navigator.permissions.query({
+          name: 'top-level-storage-access',
+          requestedOrigin: 'https://jackson.github.io'
+        });
+
+        document.getElementById('permissionStatus').textContent =
+          'top-level-storage-access: ' + permissionStatus.state;
+      } catch (error) {
+        document.getElementById('permissionStatus').textContent =
+          'Error checking permission: ' + error.message;
+      }
+    }
+
+    checkPermission();
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/default/sw.js',
+        { scope: '/default/' }
+      )
+    }
+
+  </script>
+</body>
+
+</html>

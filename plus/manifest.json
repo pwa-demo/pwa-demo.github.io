@@ -1,0 +1,17 @@
+{
+  "name": "Starbucks",
+  "short_name": "Starbucks",
+  "description": "a Progressive Web App",
+  "scope": "/plus/",
+  "start_url": "/plus/",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/plus/images/pwa-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

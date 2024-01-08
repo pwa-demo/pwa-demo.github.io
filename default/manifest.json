@@ -1,0 +1,17 @@
+{
+  "name": "Starbucks",
+  "short_name": "Starbucks",
+  "description": "Github Page as a Progressive Web App",
+  "scope": "/default/",
+  "start_url": "/default/",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/default/images/pwa-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
