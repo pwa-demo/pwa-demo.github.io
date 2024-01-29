@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/cleanup/" />
+  <link rel="manifest" href="/cleanup/manifest.json">
+  <title>Cleanup Instructions</title>
+</head>
+
+<body>
+  <h1>Cleanup Instructions</h1>
+
+  <section>
+    <h2>PWA Cleanup</h2>
+    <p>Analysts should start by removing the PWA from their home screens, followed by clearing browser data:</p>
+    <ol>
+      <li>Long-press the PWA icon on your home screen and select the option to remove or uninstall it.</li>
+      <li>Open your browser and navigate to the settings menu.</li>
+      <li>Look for options to clear the cache, cookies, history, and browser settings, typically found under 'Privacy',
+        'History', or 'Storage' settings.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Browser Cleanup</h2>
+    <h3>For iOS (Safari and other browsers)</h3>
+    <p>Follow these steps to manually clear browser data:</p>
+    <ol>
+      <li>Open 'Settings' on your iOS device and select 'Safari' or your preferred browser.</li>
+      <li>Tap on 'Clear History and Website Data' under the 'Privacy & Security' section.</li>
+      <li>For a more thorough cleanup, you may need to navigate to 'Advanced' settings to clear additional website data.
+      </li>
+    </ol>
+
+    <h3>For Android Browsers</h3>
+    <p>To clear all browser data, you can simply uninstall the browser:</p>
+    <ol>
+      <li>Go to 'Settings' and select 'Apps' or 'Application Manager'.</li>
+      <li>Find the browser app, tap on it, and then select 'Uninstall'.</li>
+      <li>Confirm the uninstallation to complete the cleanup.</li>
+    </ol>
+  </section>
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/cleanup/sw.js',
+        { scope: '/cleanup/' }
+      )
+    }
+  </script>
+</body>
+
+</html>

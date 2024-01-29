@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/prepare/" />
+  <link rel="manifest" href="/prepare/manifest.json">
+  <title>Mobile Device and Browser Selector</title>
+</head>
+
+<body>
+  <h1>Select your Mobile Device</h1>
+  <form id="deviceForm">
+    <input type="radio" id="android" name="device" value="android">
+    <label for="android">Android</label>
+
+    <input type="radio" id="ios" name="device" value="ios">
+    <label for="ios">iOS</label>
+
+    <h2>Available Browsers</h2>
+    <div id="browserList">
+      <!-- Browser links will be added here based on user selection -->
+    </div>
+
+    <button type="button" onclick="selectBrowsers()">Select Browsers</button>
+  </form>
+
+  <h2>Search for Different Browser Versions</h2>
+  <input type="text" id="searchQuery" placeholder="Enter a browser version or query">
+  <button type="button" onclick="performSearch()">Search</button>
+
+  <script>
+    function selectBrowsers() {
+      const device = document.querySelector('input[name="device"]:checked');
+      const browserList = document.getElementById('browserList');
+
+      // Clear the previous browser list
+      browserList.innerHTML = '';
+
+      if (device) {
+        if (device.value === 'android') {
+          // Android Browsers
+          const androidBrowsers = [
+            { name: 'Google Chrome for Android', link: 'https://play.google.com/store/apps/details?id=com.android.chrome' },
+            { name: 'Mozilla Firefox for Android', link: 'https://play.google.com/store/apps/details?id=org.mozilla.firefox' },
+            { name: 'Opera for Android', link: 'https://play.google.com/store/apps/details?id=com.opera.browser' },
+            { name: 'Microsoft Edge for Android', link: 'https://play.google.com/store/apps/details?id=com.microsoft.emmx' },
+            { name: 'Brave for Android', link: 'https://play.google.com/store/apps/details?id=com.brave.browser' }
+          ];
+
+          // Generate Android browser links
+          androidBrowsers.forEach(browser => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = browser.link;
+            link.target = '_blank';
+            link.textContent = browser.name;
+            listItem.appendChild(link);
+            browserList.appendChild(listItem);
+          });
+        } else if (device.value === 'ios') {
+          // iOS Browsers
+          const iosBrowsers = [
+            { name: 'Google Chrome for iOS', link: 'https://apps.apple.com/us/app/chrome/id535886823' },
+            { name: 'Mozilla Firefox for iOS', link: 'https://apps.apple.com/us/app/firefox-private-safe-browser/id989804926' },
+            { name: 'Microsoft Edge for iOS', link: 'https://apps.apple.com/us/app/microsoft-edge/id1288723196' }
+          ];
+
+          // Generate iOS browser links
+          iosBrowsers.forEach(browser => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = browser.link;
+            link.target = '_blank';
+            link.textContent = browser.name;
+            listItem.appendChild(link);
+            browserList.appendChild(listItem);
+          });
+        }
+      }
+    }
+    function performSearch() {
+      const searchQuery = document.getElementById('searchQuery').value;
+
+      if (searchQuery) {
+        // Construct the Google search URL
+        const googleSearchURL = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+
+        // Open a new tab or window with the Google search URL
+        window.open(googleSearchURL, '_blank');
+      }
+    }
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/prepare/sw.js',
+        { scope: '/prepare/' }
+      )
+    }
+  </script>
+</body>
+
+</html>
