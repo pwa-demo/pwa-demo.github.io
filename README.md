@@ -18,8 +18,10 @@ This framework is designed to measure PWA (Progressive Web Application) permissi
 * Crawling PWA: The code is located in the analysis/data_collection folder. We have not included our dataset from Common Crawl due to its size. The code in this folder is intended for demonstration; a full analysis requires the use of Docker and multi-threading for efficiency.
 * Attack 1 Real-World Examples: The relevant code is in the analysis/attack1_analysis folder. Input your data into final_pwa.txt in the format id, url, e.g., 1, www.google.com, and then run python3 main.py to start the analysis.
 * Attack 3 Real-World Examples: Code is in the analysis/attack3_analysis folder. main.py identifies potentially vulnerable PWAs, while main1.py checks for defined keywords within two PWAs. Customization of keywords is supported. Note: This analysis requires manual effort, as some websites may not use English or have differently named checkout and login pages.
-* Notes: for the dataset and how to run the code, please contact the author of this repository.
+* For questions regarding the dataset, results, and setup, please contact the author of this repository.
 
+## Responsible Disclosure
+We will keep you updated on the status of our responsible disclosure here. Currently, it is redacted for blind review.
 
 ## Disclaimer
 * Website content may change or become unavailable, resulting in varying results.
