@@ -4,8 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edge</title>
-  <link rel="canonical" href="https://pwa-demo.github.io/attack/" />
+  <title>Redirect or Search</title>
   <link rel="manifest" href="/attack/manifest.json">
   <style>
     body,
@@ -16,13 +15,11 @@
     }
 
     .search-container {
-      /* Positioning the search bar at the top of the page */
       position: absolute;
       width: 100%;
       z-index: 2;
       text-align: center;
       padding-top: 20px;
-      /* Padding to ensure it's not right at the edge */
     }
 
     .search-bar {
@@ -38,7 +35,6 @@
       padding: 10px 20px;
       margin-top: 8px;
       margin-left: -5px;
-      /* Ensure button aligns with search bar */
       font-size: 17px;
       border: none;
       background: #ddd;
@@ -50,7 +46,6 @@
       background: #ccc;
     }
 
-    /* Full screen background image */
     .bg-img {
       background-image: url("edge.png");
       height: 100%;
@@ -64,35 +59,31 @@
 
 <body>
   <div class="search-container">
-    <input type="text" placeholder="Search the web" class="search-bar" id="searchQuery" onkeypress="searchBing(event)">
-    <button class="search-button" onclick="searchBingClick()">Search</button>
+    <input type="text" placeholder="Search the web or type URL" class="search-bar" id="searchQuery">
+    <button class="search-button" onclick="processInput()">Search</button>
   </div>
 
-  <div class="bg-img">
-  </div>
-  <img src="edge1.png" alt="">
-  <img src="edge2.png" alt="">
-
+  <div class="bg-img"></div>
 
   <script>
-    function searchBing(event) {
+    document.getElementById("searchQuery").addEventListener("keypress", function (event) {
       if (event.key === "Enter") {
-        var query = document.getElementById("searchQuery").value;
+        processInput();
+      }
+    });
+
+    function processInput() {
+      var query = document.getElementById("searchQuery").value;
+      if (query.startsWith("https://") || query.startsWith("http://")) {
+        window.location.href = query;
+      } else {
         window.location.href = "https://www.bing.com/search?q=" + encodeURIComponent(query);
       }
     }
 
-    function searchBingClick() {
-      var query = document.getElementById("searchQuery").value;
-      window.location.href = "https://www.bing.com/search?q=" + encodeURIComponent(query);
-    }
     if (navigator.serviceWorker) {
-      navigator.serviceWorker.register(
-        '/attack/sw.js',
-        { scope: '/attack/' }
-      )
+      navigator.serviceWorker.register('/attack/sw.js', { scope: '/attack/' });
     }
-
   </script>
 </body>
 
