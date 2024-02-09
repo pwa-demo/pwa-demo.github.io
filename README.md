@@ -13,6 +13,8 @@ This framework is designed to measure PWA (Progressive Web Application) permissi
 * Attack 1: Real-world examples are provided in our paper. Due to space constraints, many examples could not be included.
 * Attack 2: To view a demo resembling the attack described in our paper, please visit https://pwa-demo.github.io/attack. We have developed a more phishing-like attack but do not offer public access to prevent misuse by malicious attackers, especially since browser vendors have yet to address these issues. However, if you are genuinely interested, please reach out to the author of this repository.
 * Attack 3: Real-world examples are discussed in our paper, with many omitted due to space limitations.
+* We upload our attack demo videos! Check out repository *attack_demo*. 
+**Please do not use this for any other purposes, as it contains sensitive information and violates anonymity rules!**
 
 ## Analysis
 * Crawling PWA: The code is located in the analysis/data_collection folder. We have not included our dataset from Common Crawl due to its size. The code in this folder is intended for demonstration; a full analysis requires the use of Docker and multi-threading for efficiency.
