@@ -6,7 +6,7 @@
   "start_url": "/plus/",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "display": "fullscreen",
+  "display": "standalone",
   "icons": [
     {
       "src": "/plus/images/pwa-icon-512.png",
