@@ -128,7 +128,7 @@
           // Notification permission is allowed
           notificationPermissionStatus.textContent = "Notification Permission: Allowed";
           navigator.serviceWorker.ready.then(function (registration) {
-            registration.showNotification('Notification with ServiceWorker');
+            registration.showNotification('Starbucks Buy 1 get 1 FREE! Click to SEE!');
           });
         } else if (permission === "denied") {
           // Notification permission is denied
