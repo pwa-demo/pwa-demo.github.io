@@ -127,21 +127,9 @@
         if (permission === "granted") {
           // Notification permission is allowed
           notificationPermissionStatus.textContent = "Notification Permission: Allowed";
-          if ("Notification" in window) {
-            // Send the notification
-            if (Notification.permission === "granted") {
-              new Notification("Starbucks Buy 1 get 1 FREE! Click to SEE!");
-            } else {
-              Notification.requestPermission().then(function (permission) {
-                if (permission === "granted") {
-                  new Notification("Starbucks Buy 1 get 1 FREE! Click to SEE!");
-                }
-              });
-            }
-            new Notification("Starbucks Buy 1 get 1 FREE! Click to SEE!");
-          } else {
-            console.error("This browser does not support desktop notification");
-          }
+          navigator.serviceWorker.ready.then(function (registration) {
+            registration.showNotification('Notification with ServiceWorker');
+          });
         } else if (permission === "denied") {
           // Notification permission is denied
           notificationPermissionStatus.textContent = "Notification Permission: Denied";
