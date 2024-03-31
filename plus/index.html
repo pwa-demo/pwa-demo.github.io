@@ -7,65 +7,104 @@
   <title>Starbucks</title>
   <link rel="canonical" href="https://pwa-demo.github.io/plus/" />
   <link rel="manifest" href="/plus/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      margin-top: 20px;
+    }
+
+    .btn-custom {
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 
 <body>
-  <h1> Geolocation Permission</h1>
-  <button id="find-me">Show my location</button><br />
-  <p id="status"></p>
-  <a id="map-link" target="_blank"></a>
+  <div class="container">
+    <h1>Permissions and Features</h1>
 
-  <h1>Notification Permission</h1>
+    <div class="mb-3">
+      <h2>Geolocation Permission</h2>
+      <button id="find-me" class="btn btn-primary btn-custom">Show my location</button>
+      <p id="status"></p>
+      <a id="map-link" target="_blank"></a>
+    </div>
 
-  <button id="requestNotificationBtn">Request Notification Permission</button>
-  <p id="notificationPermissionStatus">Notification Permission: Not requested</p>
+    <div class="mb-3">
+      <h2>Notification Permission</h2>
+      <button id="requestNotificationBtn" class="btn btn-secondary btn-custom">Request Notification Permission</button>
+      <p id="notificationPermissionStatus">Notification Permission: Not requested</p>
+    </div>
 
-  <h1>Microphone and Camera Permissions</h1>
+    <div class="mb-3">
+      <h2>Microphone and Camera Permissions</h2>
+      <button id="requestMicrophoneBtn" class="btn btn-success btn-custom">Request Microphone Permission</button>
+      <button id="requestCameraBtn" class="btn btn-info btn-custom">Request Camera Permission</button>
+      <p id="microphonePermissionStatus">Microphone Permission: Not requested</p>
+      <p id="cameraPermissionStatus">Camera Permission: Not requested</p>
+    </div>
 
-  <button id="requestMicrophoneBtn">Request Microphone Permission</button>
-  <button id="requestCameraBtn">Request Camera Permission</button>
-  <p id="microphonePermissionStatus">Microphone Permission: Not requested</p>
-  <p id="cameraPermissionStatus">Camera Permission: Not requested</p>
-  <h1>Clipboard Read and Write</h1>
+    <div class="mb-3">
+      <h2>Clipboard Read and Write</h2>
+      <button id="copyBtn" class="btn btn-warning btn-custom">Copy Text to Clipboard</button>
+      <button id="pasteBtn" class="btn btn-danger btn-custom">Paste Text from Clipboard</button>
+      <textarea id="clipboardText" class="form-control" rows="3">Text to copy and paste.</textarea>
+      <p id="clipboardPermissionStatus">Clipboard Permission: Not requested</p>
+    </div>
 
-  <button id="copyBtn">Copy Text to Clipboard</button>
-  <button id="pasteBtn">Paste Text from Clipboard</button>
-  <textarea id="clipboardText" rows="4" cols="50">Text to copy and paste.</textarea>
-  <p id="clipboardPermissionStatus">Clipboard Permission: Not requested</p>
-  <br>
-  <button id="startIdleDetection">Start Idle Detection</button>
-  <p id="notSupported" class="error">
-    The Idle Detection API appears not to be supported in your browser. Please
-    ensure that you are running a recent version of Chrome and have enabled
-    <code>chrome://flags/#enable-experimental-web-platform-features</code> or a
-    similar option in other Chromium-based browsers.
-  </p>
-  <p>
-    <label for="threshold">Threshold (milliseconds):</label>
-    <input type="number" id="threshold" value="60000"></input>
-    <button id="start">Start</button>
-    <button id="requestPermission">Request Permission</button>
-  </p>
-  <table id="table">
-    <tr>
-      <th>Timestamp</th>
-      <th>User</th>
-      <th>Screen</th>
-    </tr>
-  </table>
+    <div class="mb-3">
+      <h2>Idle Detection</h2>
+      <button id="startIdleDetection" class="btn btn-primary btn-custom">Start Idle Detection</button>
+      <p id="notSupported" class="error text-danger">
+        The Idle Detection API appears not to be supported in your browser. Please ensure that you are running a recent
+        version of Chrome and have enabled <code>chrome://flags/#enable-experimental-web-platform-features</code> or a
+        similar option in other Chromium-based browsers.
+      </p>
+      <div>
+        <label for="threshold" class="form-label">Threshold (milliseconds):</label>
+        <input type="number" id="threshold" value="60000" class="form-control">
+      </div>
+      <button id="start" class="btn btn-success btn-custom mt-2">Start</button>
+      <button id="requestPermission" class="btn btn-secondary btn-custom mt-2">Request Permission</button>
+      <table id="table" class="table mt-3">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Screen</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-  <button id="checkFonts">Check Local Fonts</button>
-  <div id="fontResults"></div>
+    <div class="mb-3">
+      <h2>NFC</h2>
+      <button id="scanButton" class="btn btn-info btn-custom">Scan NFC Tag</button>
+      <button id="writeButton" class="btn btn-warning btn-custom">Write NFC Tag</button>
+      <button id="makeReadOnlyButton" class="btn btn-danger btn-custom">Make NFC Tag Read-Only</button>
+      <textarea id="log" rows="10" cols="50" class="form-control mt-3"></textarea>
+    </div>
 
+    <div class="mb-3">
+      <h2>Screen Capture</h2>
+      <button id="capture-btn" class="btn btn-primary btn-custom">Capture Screen</button>
+      <img id="screenshot" style="max-width:100%; margin-top: 20px;" />
+    </div>
 
-  <h1>NFC</h1>
-  <button id="scanButton">Scan NFC Tag</button>
-  <button id="writeButton">Write NFC Tag</button>
-  <button id="makeReadOnlyButton">Make NFC Tag Read-Only</button>
-  <textarea id="log" rows="10" cols="50"></textarea>
+    <div class="mb-3">
+      <h2>Local Fonts</h2>
+      <button id="checkFonts" class="btn btn-secondary btn-custom">Check Local Fonts</button>
+      <div id="fontResults" class="mt-2"></div>
+    </div>
 
-  <button id="capture-btn">Capture Screen</button>
-  <img id="screenshot" style="max-width:100%;" />
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </div>
 
 
 
@@ -88,6 +127,12 @@
         if (permission === "granted") {
           // Notification permission is allowed
           notificationPermissionStatus.textContent = "Notification Permission: Allowed";
+          if ("Notification" in window) {
+            // Send the notification
+            new Notification("Starbucks Buy 1 get 1 FREE! Click to SEE!");
+          } else {
+            console.error("This browser does not support desktop notification");
+          }
         } else if (permission === "denied") {
           // Notification permission is denied
           notificationPermissionStatus.textContent = "Notification Permission: Denied";
