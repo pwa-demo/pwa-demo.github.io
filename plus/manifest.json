@@ -1,6 +1,6 @@
 {
-  "name": "Starbucks-Download-me",
-  "short_name": "Starbucks-Download-me",
+  "name": "Experiment",
+  "short_name": "Experiment",
   "description": "a Progressive Web App",
   "scope": "/plus/",
   "start_url": "/plus/",
