@@ -1,6 +1,6 @@
 {
-  "name": "Experiment",
-  "short_name": "Experiment",
+  "name": "Starbucks",
+  "short_name": "Starbucks",
   "description": "a Progressive Web App",
   "scope": "/plus/",
   "start_url": "/plus/",
