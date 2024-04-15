@@ -25,6 +25,12 @@
 
 <body>
   <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/install/sw.js',
+        { scope: '/install/' }
+      )
+    }
     let deferredPrompt;
 
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -52,7 +58,7 @@
       installButton.style.fontSize = '16px';
       installButton.style.margin = '4px 2px';
       installButton.style.cursor = 'pointer';
-
+      installButton.style.display = 'none';
       document.body.appendChild(installButton);
 
       installButton.addEventListener('click', (e) => {
