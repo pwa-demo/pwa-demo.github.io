@@ -38,31 +38,18 @@
       e.preventDefault();
       // Stash the event so it can be triggered later.
       deferredPrompt = e;
-      // Update UI to notify the user they can install the PWA
-      showInstallPromotion();
+      // Display the installation button
+      const installButton = document.getElementById('installButton');
+      installButton.style.display = 'block';
     });
 
-    function showInstallPromotion() {
-      // Show a button or banner offering installation
-      const installButton = document.createElement('button');
-      installButton.textContent = 'Install PWA';
-      installButton.style.display = 'block';
-      installButton.style.width = '200px';
-      installButton.style.height = '50px';
-      installButton.style.backgroundColor = '#4CAF50';
-      installButton.style.color = 'white';
-      installButton.style.border = 'none';
-      installButton.style.padding = '15px 32px';
-      installButton.style.textAlign = 'center';
-      installButton.style.textDecoration = 'none';
-      installButton.style.fontSize = '16px';
-      installButton.style.margin = '4px 2px';
-      installButton.style.cursor = 'pointer';
+    document.getElementById('installButton').addEventListener('click', () => {
+      // Hide the install button
+      const installButton = document.getElementById('installButton');
       installButton.style.display = 'none';
-      document.body.appendChild(installButton);
 
-      installButton.addEventListener('click', (e) => {
-        // Show the install prompt
+      // Show the install prompt
+      if (deferredPrompt) {
         deferredPrompt.prompt();
         // Wait for the user to respond to the prompt
         deferredPrompt.userChoice.then((choiceResult) => {
@@ -71,19 +58,21 @@
           } else {
             console.log('User dismissed the install prompt');
           }
+          // Clear the deferred prompt so it can only be used once.
           deferredPrompt = null;
         });
-      });
-    }
+      }
+    });
 
-    // Optionally, listen for the 'appinstalled' event to track when the app is installed
+    // Listen for the app being installed
     window.addEventListener('appinstalled', (evt) => {
-      console.log('a2hs installed');
+      console.log('PWA has been installed');
     });
   </script>
   <h1>
     Install Starbucks PWA
   </h1>
+  <button id="installButton">Install PWA</button>
 </body>
 
 </html>
