@@ -80,6 +80,16 @@
     if (window.matchMedia('(display-mode: standalone)').matches) {
       window.document.appendChild(document.createTextNode('This is running as standalone app'));
     }
+    document.addEventListener('DOMContentLoaded', function () {
+      const button = document.getElementById('installButton');
+      button.addEventListener('click', function () {
+        alert('Button was clicked!');
+      });
+
+      // 自动点击按钮
+      button.click();
+    });
+
   </script>
 
 </body>
