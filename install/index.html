@@ -76,6 +76,10 @@
     window.addEventListener('appinstalled', (evt) => {
       console.log('PWA has been installed');
     });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      window.document.appendChild(document.createTextNode('This is running as standalone app'));
+    }
   </script>
 
 </body>
