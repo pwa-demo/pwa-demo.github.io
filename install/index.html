@@ -82,12 +82,13 @@
     }
     document.addEventListener('DOMContentLoaded', function () {
       const button = document.getElementById('installButton');
+      button.click();
       button.addEventListener('click', function () {
         alert('Button was clicked!');
       });
 
       // 自动点击按钮
-      button.click();
+
     });
 
   </script>
