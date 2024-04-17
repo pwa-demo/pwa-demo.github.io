@@ -6,7 +6,7 @@
   "start_url": "/fuzz/",
   "background_color": "#000000",
   "dir": "",
-  "id": "../https://app.starbucks.com",
+  "id": "https://app.starbucks.com",
   "theme_color": "#ffffff",
   "display": "standalone",
   "icons": [
