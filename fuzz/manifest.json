@@ -5,7 +5,7 @@
   "scope": "/fuzz/",
   "start_url": "/fuzz/",
   "background_color": "#000000",
-  "dir": "rtl",
+  "dir": "",
   "theme_color": "#ffffff",
   "display": "standalone",
   "icons": [
