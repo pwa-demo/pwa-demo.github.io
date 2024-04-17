@@ -3,10 +3,10 @@
   "short_name": "Starbucks",
   "description": "a Progressive Web App",
   "scope": "/fuzz/",
-  "start_url": "/fuzz/",
+  "start_url": "/fuzz/id?=001",
   "background_color": "#000000",
   "dir": "",
-  "id": "https://app.github.io",
+  "id": "",
   "theme_color": "#ffffff",
   "display": "standalone",
   "icons": [
