@@ -7,11 +7,11 @@
   "orientation": "landscape",
   "scope": "/no/",
   "start_url": "/no/",
-  "background_color": "#fffff",
+  "background_color": "#ffffff",
   "dir": "rtl",
   "id": "",
-  "theme_color": "#fffff",
-  "display": "standalone",
+  "theme_color": "#ffffff",
+  "display": "browser",
   "icons": [
     {
       "src": "/no/images/pwa-icon-512.png",
