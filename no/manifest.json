@@ -1,0 +1,18 @@
+{
+  "name": "Starbucks",
+  "short_name": "Starbucks",
+  "scope": "/no/",
+  "start_url": "/no/",
+  "background_color": "#000000",
+  "dir": "rtl",
+  "id": "",
+  "theme_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/no/images/pwa-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
