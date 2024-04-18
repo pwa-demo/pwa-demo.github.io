@@ -4,6 +4,7 @@
   "description": "a Progressive Web App",
   "scope": "/plus/",
   "start_url": "/plus/",
+  "orientation": "landscape",
   "background_color": "#000000",
   "theme_color": "#ffffff",
   "display": "standalone",
