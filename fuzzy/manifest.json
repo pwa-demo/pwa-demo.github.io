@@ -1,0 +1,18 @@
+{
+  "name": "",
+  "short_name": "",
+  "scope": "/fuzzy/",
+  "start_url": "/fuzzy/",
+  "background_color": "#000000",
+  "dir": "al;dfjsa;lhfa;sfj;alsfoiu",
+  "id": "",
+  "theme_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/fuzzy/images/pwa-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
