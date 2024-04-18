@@ -3,7 +3,7 @@
   "short_name": "Starbucks",
   "description": "This is a well know stracbucks app",
   "permisison": "gcm",
-  "lang": "en-US",
+  "lang": "ab",
   "scope": "/no/",
   "start_url": "/no/",
   "background_color": "#000000",
