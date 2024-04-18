@@ -11,7 +11,7 @@
   "dir": "rtl",
   "id": "",
   "theme_color": "#ffffff",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "/no/images/pwa-icon-512.png",
