@@ -1,6 +1,7 @@
 {
   "name": "Starbucks",
   "short_name": "Starbucks",
+  "description": "This is a well know stracbucks app",
   "scope": "/no/",
   "start_url": "/no/",
   "background_color": "#000000",
