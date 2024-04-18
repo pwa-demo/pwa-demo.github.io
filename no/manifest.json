@@ -4,7 +4,7 @@
   "description": "This is a well know stracbucks app",
   "permisison": "gcm",
   "lang": "ab",
-  "orientation": "landscape-secondary",
+  "orientation": "lyes",
   "scope": "/no/",
   "start_url": "/no/",
   "background_color": "#000000",
