@@ -6,7 +6,7 @@
   "lang": "ab",
   "orientation": "portrait",
   "scope": "/no/",
-  "start_url": "/no/",
+  "start_url": "?redirect=www.starbucks.com",
   "background_color": "#ffffff",
   "dir": "rtl",
   "id": "",
@@ -14,7 +14,7 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "<script>javascript:alert(1);</script>",
+      "src": "https://www.starbucks.com/next_static/icons/pwa-icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
