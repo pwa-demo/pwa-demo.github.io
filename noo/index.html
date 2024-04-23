@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/noo" />
+  <link rel="manifest" href="/noo/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #installButton {
+      /* display: none; */
+      /* Hidden by default */
+      width: 200px;
+      height: 50px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    Install Starbucks PWA
+  </h1>
+  <button id="installButton">Install PWA</button>
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/noo/sw.js',
+        { scope: '/noo/' }
+      )
+    }
+    navigator.setAppBadge(12);
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      deferredPrompt = e;
+      // Display the installation button
+      const installButton = document.getElementById('installButton');
+      installButton.style.display = 'block';
+    });
+
+    document.getElementById('installButton').addEventListener('click', () => {
+      // Hide the install button
+      const installButton = document.getElementById('installButton');
+      installButton.style.display = 'none';
+
+      // Show the install prompt
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          // Clear the deferred prompt so it can only be used once.
+          deferredPrompt = null;
+        });
+      }
+    });
+
+    // Listen for the app being installed
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('PWA has been installed');
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      window.document.appendChild(document.createTextNode('This is running as standalone app'));
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      const button = document.getElementById('installButton');
+      button.click();
+      button.addEventListener('click', function () {
+        alert('Button was clicked!');
+      });
+
+      // 自动点击按钮
+
+    });
+
+  </script>
+
+</body>
+
+</html>
