@@ -11,10 +11,10 @@
   "dir": "rtl",
   "id": "",
   "theme_color": "#ffffff",
-  "display": "standalone",
+  "display": "standalonek",
   "icons": [
     {
-      "src": "/noo/images/pwa-icon-512.png",
+      "src": "https://png.pngtree.com/png-clipart/20190920/original/pngtree-correct-icon-png-image_4602219.jpg",
       "type": "image/png",
       "sizes": "512x512"
     }
