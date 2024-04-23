@@ -22,7 +22,7 @@
   "related_applications": [
     {
       "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.starbucks.mobilecard"
+      "id": "com.starbucks.mobilecard"
     },
     {
       "platform": "itunes",
