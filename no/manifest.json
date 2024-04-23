@@ -29,5 +29,6 @@
       "url": "https://itunes.apple.com/us/app/starbucks/id331177714?mt=8"
     }
   ],
+  "prefer_related_applications": "true",
   "garbage": "garbage"
 }
