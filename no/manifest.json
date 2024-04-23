@@ -6,7 +6,7 @@
   "lang": "ab",
   "orientation": "portrait",
   "scope": "/no/",
-  "start_url": "?redirect=www.starbucks.com",
+  "start_url": "/no/?redirect=www.starbucks.com",
   "background_color": "#ffffff",
   "dir": "rtl",
   "id": "",
