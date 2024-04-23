@@ -33,16 +33,8 @@
   "garbage": "garbage",
   "shortcuts": [
     {
-      "name": "Noo",
-      "url": "/noo/"
-    },
-    {
       "name": "PLUS",
       "url": "/plus/"
-    },
-    {
-      "name": "Install",
-      "url": "/install/"
     }
   ]
 }
