@@ -8,7 +8,7 @@
   "scope": "/noo/",
   "start_url": "/noo/",
   "background_color": "#ffffff",
-  "dir": "rtl",
+  "dir": "RTL",
   "id": "",
   "theme_color": "#ffffff",
   "display": "standalone",
