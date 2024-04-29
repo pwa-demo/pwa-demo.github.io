@@ -5,12 +5,12 @@
   "permissions": "gcm",
   "lang": "ab",
   "orientation": "portrait",
-  "scope": "/noo/",
-  "start_url": "/noo/",
+  "scope": "/no/",
+  "start_url": "/no/",
   "background_color": "#000000",
   "dir": "RTL",
   "id": "",
-  "theme_color": "#ffffff",
+  "theme_color": "#000000",
   "display": "standalone",
   "icons": [
     {
