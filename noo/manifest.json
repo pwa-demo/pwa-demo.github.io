@@ -1,5 +1,5 @@
 {
-  "name": "    ",
+  "name": "What is my name?",
   "short_name": "Starbucks",
   "description": "This is a well know stracbucks app",
   "permissions": "gcm",
@@ -7,7 +7,7 @@
   "orientation": "portrait",
   "scope": "/noo/",
   "start_url": "/noo/",
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "dir": "RTL",
   "id": "",
   "theme_color": "#ffffff",
