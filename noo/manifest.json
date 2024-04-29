@@ -27,6 +27,10 @@
     {
       "platform": "itunes",
       "url": "https://itunes.apple.com/us/app/starbucks/id331177714?mt=8"
+    },
+    {
+      "platform": "webapp",
+      "url": "https://app.starbucks.com/"
     }
   ],
   "prefer_related_applications": true,
