@@ -5,8 +5,8 @@
   "permissions": "gcm",
   "lang": "ab",
   "orientation": "portrait",
-  "scope": "/fuzz/",
-  "start_url": "/fuzz/",
+  "scope": "/noo/",
+  "start_url": "/noo/",
   "background_color": "#000000",
   "dir": "RTL",
   "id": "",
@@ -30,7 +30,7 @@
     },
     {
       "platform": "webapp",
-      "url": "https://app.starbucks.com/"
+      "url": "https://pwa-demo.github.io/noo"
     }
   ],
   "prefer_related_applications": true,
