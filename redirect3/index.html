@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/redirect3" />
+  <link rel="manifest" href="/redirect3/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #installButton {
+      /* display: none; */
+      /* Hidden by default */
+      width: 200px;
+      height: 50px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    Starbucks is coming
+  </h1>
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/redirect3/sw.js',
+        { scope: '/redirect3/' }
+      )
+    }
+    const queryParams = new URLSearchParams(window.location.search);
+
+    // 检查是否有 "redirect" 这个查询参数
+    const redirectUrl = queryParams.get('redirect');
+    if (redirectUrl) {
+      // 执行重定向
+      window.location.href = 'https://' + redirectUrl;
+    }
+
+
+  </script>
+
+</body>
+
+</html>
