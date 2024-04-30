@@ -35,8 +35,9 @@
   </h1>
 
   <button id="replace">Window Location Replace</button>
-
+  <button id="location">Window Location</button>
   <button id="assign">Window Location Href</button>
+  <button id="assign_url">Window Location Assign</button>
   <script>
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
@@ -52,7 +53,13 @@
     document.getElementById('assign').addEventListener('click', () => {
       window.location.href = 'https://app.starbucks.com';
     });
+    document.getElementById('assign_url').addEventListener('click', () => {
+      window.location.assign('https://app.starbucks.com');
+    });
 
+    document.getElementById('location').addEventListener('click', () => {
+      window.location = 'https://app.starbucks.com';
+    });
 
   </script>
 
