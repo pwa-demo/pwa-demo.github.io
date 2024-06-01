@@ -14,8 +14,32 @@
 
 <body>
   <button id="installButton">Install PWA</button>
-
+  <div id="overlay"></div>
+  <div id="popup">
+    <p>This is a simple popup.</p>
+    <button id="closePopupBtn">Close</button>
+  </div>
   <script>
+    function triggerPopup() {
+      const popup = document.getElementById('popup');
+      const overlay = document.getElementById('overlay');
+      popup.style.display = 'block';
+      overlay.style.display = 'block';
+    }
+
+    document.getElementById('closePopupBtn').addEventListener('click', function () {
+      const popup = document.getElementById('popup');
+      const overlay = document.getElementById('overlay');
+      popup.style.display = 'none';
+      overlay.style.display = 'none';
+    });
+
+    document.getElementById('overlay').addEventListener('click', function () {
+      const popup = document.getElementById('popup');
+      const overlay = document.getElementById('overlay');
+      popup.style.display = 'none';
+      overlay.style.display = 'none';
+    });
     navigator.setAppBadge(12);
     let deferredPrompt;
 
@@ -63,7 +87,7 @@
       button.click();
 
       // button.addEventListener('click', triggerDialog);
-
+      button.addEventListener('click', triggerPopup);
     });
 
   </script>
