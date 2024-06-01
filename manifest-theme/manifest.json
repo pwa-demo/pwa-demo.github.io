@@ -1,5 +1,5 @@
 {
-  "name": "ThemeColr-f20",
+  "name": "ThemeColr-f2a",
   "short_name": "Theme",
   "description": "This is a well know stracbucks app",
   "permissions": "gcm",
@@ -10,8 +10,8 @@
   "background_color": "#ffffff",
   "dir": "rtl",
   "id": "",
-  "theme_color": "#000000",
-  "display": "minimal-ui",
+  "theme_color": "#aaaaaa",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "https://www.starbucks.com/next_static/icons/pwa-icon-512.png",

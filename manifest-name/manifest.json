@@ -1,6 +1,6 @@
 {
-  "name": "Name-starbucks2utube-Utube",
-  "short_name": "Utube",
+  "name": "Name-starbucks2ins",
+  "short_name": "Instagram",
   "description": "This is a well know stracbucks app",
   "permissions": "gcm",
   "lang": "ab",
@@ -11,7 +11,7 @@
   "dir": "rtl",
   "id": "",
   "theme_color": "#ffffff",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "https://www.gstatic.com/youtube/img/web/monochrome/logo_512x512.png",

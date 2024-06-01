@@ -11,10 +11,10 @@
   "dir": "rtl",
   "id": "",
   "theme_color": "#ffffff",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "icons": [
     {
-      "src": "https://www.gstatic.com/youtube/img/web/monochrome/logo_512x512.png",
+      "src": "https://www.starbucks.com/next_static/icons/pwa-icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
