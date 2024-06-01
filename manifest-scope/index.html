@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" href="https://pwa-demo.github.io/manifest-scope" />
+  <link rel="manifest" href="/manifest-scope/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+  <button id="installButton">Install PWA</button>
+
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/manifest-scope/sw.js',
+        { scope: '/manifest-scope/' }
+      )
+    }
+
+
+
+  </script>
+
+</body>
+
+</html>
