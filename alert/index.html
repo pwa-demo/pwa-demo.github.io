@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" href="https://pwa-demo.github.io/alert" />
+  <link rel="manifest" href="/alert/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+  <button onclick="triggerAlert()">Show Alert</button>
+  <button onclick="triggerConfirm()">Show Confirm</button>
+  <button onclick="triggerPrompt()">Show Prompt</button>
+
+  <script>
+    // Function to trigger alert
+    function triggerAlert() {
+      alert('This is an alert box!');
+    }
+
+    // Function to trigger confirm
+    function triggerConfirm() {
+      const result = confirm('Are you sure you want to proceed?');
+      if (result) {
+        // User clicked OK
+        alert('You clicked OK');
+      } else {
+        // User clicked Cancel
+        alert('You clicked Cancel');
+      }
+    }
+
+    // Function to trigger prompt
+    function triggerPrompt() {
+      const userInput = prompt('Please enter your name:', 'Default Name');
+      if (userInput !== null) {
+        // User entered something and clicked OK
+        alert('You entered: ' + userInput);
+      } else {
+        // User clicked Cancel
+        alert('You clicked Cancel');
+      }
+    }
+  </script>
+
+
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/alert/sw.js',
+        { scope: '/alert/' }
+      )
+    }
+
+
+
+  </script>
+
+</body>
+
+</html>
