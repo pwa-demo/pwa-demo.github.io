@@ -11,7 +11,7 @@
   "dir": "rtl",
   "id": "",
   "theme_color": "#ffffff",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "https://www.starbucks.com/next_static/icons/pwa-icon-512.png",

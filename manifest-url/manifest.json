@@ -5,7 +5,7 @@
   "permissions": "gcm",
   "lang": "ab",
   "orientation": "portrait",
-  "scope": "/manifest-url/",
+  "scope": "/plus/",
   "start_url": "/manifest-url/",
   "background_color": "#ffffff",
   "dir": "rtl",
