@@ -1,6 +1,6 @@
 {
   "name": "Scope-manifest2plus",
-  "short_name": "Starbucks-old",
+  "short_name": "Scope",
   "description": "This is a well know stracbucks app",
   "permissions": "gcm",
   "lang": "ab",
