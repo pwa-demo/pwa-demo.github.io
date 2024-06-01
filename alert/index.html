@@ -16,6 +16,7 @@
   <button onclick="triggerAlert()">Show Alert</button>
   <button onclick="triggerConfirm()">Show Confirm</button>
   <button onclick="triggerPrompt()">Show Prompt</button>
+  <button id="installButton">Install PWA</button>
 
   <script>
     // Function to trigger alert
@@ -46,6 +47,28 @@
         alert('You clicked Cancel');
       }
     }
+    function installPWA() {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice
+        .then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the A2HS prompt');
+          } else {
+            console.log('User dismissed the A2HS prompt');
+          }
+          deferredPrompt = null;
+        });
+    }
+
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installButton = document.getElementById('installButton');
+      installButton.style.display = 'block';
+      installButton.addEventListener('click', installPWA);
+    });
+
   </script>
 
 
