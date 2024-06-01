@@ -5,30 +5,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="canonical" href="https://pwa-demo.github.io/modal" />
-  <link rel="manifest" href="/modal/manifest.json">
+  <link rel="canonical" href="https://pwa-demo.github.io/popover" />
+  <link rel="manifest" href="/popover/manifest.json">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-
+  <style>
+    #popover {
+      display: none;
+      position: absolute;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 
 <body>
-  <!-- <button id="installButton">Install</button> -->
-  <button id="openModalBtn" style="display:none;">Open Modal</button>
-  <dialog id="modalDialog">
-    <form method="dialog">
-      <p>Click me</p>
-      <menu>
-        <button id="confirmBtn" value="default">OK</button>
-      </menu>
-    </form>
-  </dialog>
   <button id="installButton">Install PWA</button>
-
+  <div id="popover">This is a simple popover.</div>
   <script>
-    function triggerDialog() {
-      const modalDialog = document.getElementById('modalDialog');
-      modalDialog.showModal();
+    function triggerPopover(event) {
+      const popover = document.getElementById('popover');
+      if (popover.style.display === 'none') {
+        popover.style.display = 'block';
+        popover.style.top = `${event.clientY + 10}px`;
+        popover.style.left = `${event.clientX + 10}px`;
+      } else {
+        popover.style.display = 'none';
+      }
     }
     navigator.setAppBadge(12);
     let deferredPrompt;
@@ -76,9 +81,8 @@
       const button = document.getElementById('installButton');
       button.click();
 
-      button.addEventListener('click', triggerDialog);
-      // 自动点击按钮
-
+      // button.addEventListener('click', triggerDialog);
+      button.addEventListener('click', triggerPopover);
     });
 
   </script>
@@ -87,8 +91,8 @@
   <script>
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
-        '/modal/sw.js',
-        { scope: '/modal/' }
+        '/popover/sw.js',
+        { scope: '/popover/' }
       )
     }
 

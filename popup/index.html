@@ -5,31 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="canonical" href="https://pwa-demo.github.io/modal" />
-  <link rel="manifest" href="/modal/manifest.json">
+  <link rel="canonical" href="https://pwa-demo.github.io/popup" />
+  <link rel="manifest" href="/popup/manifest.json">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 
 </head>
 
 <body>
-  <!-- <button id="installButton">Install</button> -->
-  <button id="openModalBtn" style="display:none;">Open Modal</button>
-  <dialog id="modalDialog">
-    <form method="dialog">
-      <p>Click me</p>
-      <menu>
-        <button id="confirmBtn" value="default">OK</button>
-      </menu>
-    </form>
-  </dialog>
   <button id="installButton">Install PWA</button>
 
   <script>
-    function triggerDialog() {
-      const modalDialog = document.getElementById('modalDialog');
-      modalDialog.showModal();
-    }
     navigator.setAppBadge(12);
     let deferredPrompt;
 
@@ -76,8 +62,7 @@
       const button = document.getElementById('installButton');
       button.click();
 
-      button.addEventListener('click', triggerDialog);
-      // 自动点击按钮
+      // button.addEventListener('click', triggerDialog);
 
     });
 
@@ -87,8 +72,8 @@
   <script>
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
-        '/modal/sw.js',
-        { scope: '/modal/' }
+        '/popup/sw.js',
+        { scope: '/popup/' }
       )
     }
 

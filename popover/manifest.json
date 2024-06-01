@@ -1,0 +1,34 @@
+{
+  "name": "Starbucks",
+  "short_name": "Starbucks",
+  "description": "This is a well know stracbucks app",
+  "permissions": "gcm",
+  "lang": "ab",
+  "orientation": "portrait",
+  "scope": "/popover/",
+  "start_url": "/popover/",
+  "background_color": "#ffffff",
+  "dir": "rtl",
+  "id": "",
+  "theme_color": "#ffffff",
+  "display": "minimal-ui",
+  "icons": [
+    {
+      "src": "https://www.starbucks.com/next_static/icons/pwa-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "com.starbucks.mobilecard"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://itunes.apple.com/us/app/starbucks/id331177714?mt=8"
+    }
+  ],
+  "prefer_related_applications": true,
+  "garbage": "garbage"
+}
