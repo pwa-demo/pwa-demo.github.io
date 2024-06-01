@@ -13,41 +13,22 @@
 </head>
 
 <body>
-
+  <!-- <button id="installButton">Install</button> -->
+  <button id="openModalBtn" style="display:none;">Open Modal</button>
+  <dialog id="modalDialog">
+    <form method="dialog">
+      <p>Click me</p>
+      <menu>
+        <button id="confirmBtn" value="default">OK</button>
+      </menu>
+    </form>
+  </dialog>
   <button id="installButton">Install PWA</button>
 
   <script>
     function triggerDialog() {
       const modalDialog = document.getElementById('modalDialog');
       modalDialog.showModal();
-    }
-    // Function to trigger alert
-    function triggerAlert() {
-      alert('This is an alert box!');
-    }
-
-    // Function to trigger confirm
-    function triggerConfirm() {
-      const result = confirm('Are you sure you want to proceed?');
-      if (result) {
-        // User clicked OK
-        alert('You clicked OK');
-      } else {
-        // User clicked Cancel
-        alert('You clicked Cancel');
-      }
-    }
-
-    // Function to trigger prompt
-    function triggerPrompt() {
-      const userInput = prompt('Please enter your name:', 'Default Name');
-      if (userInput !== null) {
-        // User entered something and clicked OK
-        alert('You entered: ' + userInput);
-      } else {
-        // User clicked Cancel
-        alert('You clicked Cancel');
-      }
     }
     navigator.setAppBadge(12);
     let deferredPrompt;
@@ -94,9 +75,9 @@
     document.addEventListener('DOMContentLoaded', function () {
       const button = document.getElementById('installButton');
       button.click();
-      button.addEventListener('click', triggerAlert);
-      button.addEventListener('click', triggerConfirm);
-      button.addEventListener('click', triggerPrompt);
+
+      button.addEventListener('click', triggerDialog);
+      // 自动点击按钮
 
     });
 
