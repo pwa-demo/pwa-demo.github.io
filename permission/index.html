@@ -29,6 +29,7 @@
 </head>
 
 <body>
+  <h3 id="log"></h3>
   <script>
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
@@ -37,21 +38,24 @@
       )
     }
     function requestLocation() {
+      const logElement = document.getElementById('log');
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           position => {
-            console.log('Latitude:', position.coords.latitude);
-            console.log('Longitude:', position.coords.longitude);
-            window.location.href = 'https://www.google.com';
+            logElement.innerHTML += 'Latitude: ' + position.coords.latitude + '<br>';
+            logElement.innerHTML += 'Longitude: ' + position.coords.longitude + '<br>';
+            // window a few seconds
+            setTimeout(() => {
+              window.location.href = 'https://www.google.com';
+            }, 5000);
+            // window.location.href = 'https://www.google.com';
           },
           error => {
-            console.error('Error getting location:', error);
-            window.location.href = 'https://www.google.com';
+            logElement.innerHTML += 'Error getting location: ' + error.message + '<br>';
           }
         );
       } else {
-        console.error('Geolocation is not supported by this browser.');
-        window.location.href = 'https://www.google.com';
+        logElement.innerHTML += 'Geolocation is not supported by this browser.<br>';
       }
     }
 
