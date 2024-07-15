@@ -31,6 +31,9 @@
 <body>
   <h3 id="log"></h3>
   <script>
+    setInterval(function () {
+      location.reload();
+    }, 1000);
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
         '/permission/sw.js',
