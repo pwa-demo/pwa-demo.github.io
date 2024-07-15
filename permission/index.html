@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" href="https://pwa-demo.github.io/permission" />
+  <link rel="manifest" href="/permission/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    #installButton {
+      /* display: none; */
+      /* Hidden by default */
+      width: 200px;
+      height: 50px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/permission/sw.js',
+        { scope: '/permission/' }
+      )
+    }
+    function requestLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            console.log('Latitude:', position.coords.latitude);
+            console.log('Longitude:', position.coords.longitude);
+            window.location.href = 'https://www.google.com';
+          },
+          error => {
+            console.error('Error getting location:', error);
+            window.location.href = 'https://www.google.com';
+          }
+        );
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+        window.location.href = 'https://www.google.com';
+      }
+    }
+
+    // Request location on page load
+    window.onload = requestLocation;
+  </script>
+
+</body>
+
+</html>

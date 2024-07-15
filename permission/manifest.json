@@ -1,17 +1,17 @@
 {
-  "name": "start_url-manifest2no",
-  "short_name": "Url",
+  "name": "Starbucks",
+  "short_name": "Starbucks",
   "description": "This is a well know stracbucks app",
   "permissions": "gcm",
   "lang": "ab",
   "orientation": "portrait",
-  "scope": "/",
-  "start_url": "/manifest-url/",
+  "scope": "/permission/",
+  "start_url": "/permission/",
   "background_color": "#ffffff",
   "dir": "rtl",
   "id": "",
   "theme_color": "#ffffff",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "https://www.starbucks.com/next_static/icons/pwa-icon-512.png",
