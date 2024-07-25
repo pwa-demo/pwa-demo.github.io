@@ -32,61 +32,70 @@
   <h1>PWA Sensor API Experiment</h1>
   <div id="accelerometer-data" class="sensor-data">Accelerometer Data: Not available</div>
   <div id="gyroscope-data" class="sensor-data">Gyroscope Data: Not available</div>
+  <div id="magnetometer-data" class="sensor-data">Magnetometer Data: Not available</div>
 
   <script>
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
         '/iframe/sw.js',
         { scope: '/iframe/' }
-      )
+      );
     }
-    if ('Accelerometer' in window && 'Gyroscope' in window) {
-      // Request permissions for the sensors
-      navigator.permissions.query({ name: 'accelerometer' }).then(result => {
-        if (result.state === 'granted') {
-          startAccelerometer();
+
+    function requestSensorPermission(sensorType) {
+      return navigator.permissions.query({ name: sensorType }).then(result => {
+        if (result.state === 'granted' || result.state === 'prompt') {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
+
+    function startSensor(sensorClass, elementId) {
+      try {
+        const sensor = new sensorClass({ frequency: 60 });
+        sensor.addEventListener('reading', () => {
+          document.getElementById(elementId).textContent =
+            `${sensorClass.name}: x=${sensor.x.toFixed(2)}, y=${sensor.y.toFixed(2)}, z=${sensor.z.toFixed(2)}`;
+        });
+        sensor.start();
+      } catch (error) {
+        document.getElementById(elementId).textContent = `${sensorClass.name} error: ${error}`;
+      }
+    }
+
+    async function initSensors() {
+      if ('Accelerometer' in window && 'Gyroscope' in window && 'Magnetometer' in window) {
+        const accelerometerPermission = await requestSensorPermission('accelerometer');
+        const gyroscopePermission = await requestSensorPermission('gyroscope');
+        const magnetometerPermission = await requestSensorPermission('magnetometer');
+
+        if (accelerometerPermission) {
+          startSensor(Accelerometer, 'accelerometer-data');
         } else {
           document.getElementById('accelerometer-data').textContent = 'Permission to use accelerometer was denied.';
         }
-      });
 
-      navigator.permissions.query({ name: 'gyroscope' }).then(result => {
-        if (result.state === 'granted') {
-          startGyroscope();
+        if (gyroscopePermission) {
+          startSensor(Gyroscope, 'gyroscope-data');
         } else {
           document.getElementById('gyroscope-data').textContent = 'Permission to use gyroscope was denied.';
         }
-      });
-    } else {
-      document.getElementById('accelerometer-data').textContent = 'Accelerometer or Gyroscope not supported by your browser.';
-      document.getElementById('gyroscope-data').textContent = 'Accelerometer or Gyroscope not supported by your browser.';
-    }
 
-    function startAccelerometer() {
-      try {
-        const accelerometer = new Accelerometer({ frequency: 60 });
-        accelerometer.addEventListener('reading', () => {
-          document.getElementById('accelerometer-data').textContent =
-            `Accelerometer: x=${accelerometer.x.toFixed(2)}, y=${accelerometer.y.toFixed(2)}, z=${accelerometer.z.toFixed(2)}`;
-        });
-        accelerometer.start();
-      } catch (error) {
-        document.getElementById('accelerometer-data').textContent = `Accelerometer error: ${error}`;
+        if (magnetometerPermission) {
+          startSensor(Magnetometer, 'magnetometer-data');
+        } else {
+          document.getElementById('magnetometer-data').textContent = 'Permission to use magnetometer was denied.';
+        }
+      } else {
+        document.getElementById('accelerometer-data').textContent = 'Accelerometer not supported by your browser.';
+        document.getElementById('gyroscope-data').textContent = 'Gyroscope not supported by your browser.';
+        document.getElementById('magnetometer-data').textContent = 'Magnetometer not supported by your browser.';
       }
     }
 
-    function startGyroscope() {
-      try {
-        const gyroscope = new Gyroscope({ frequency: 60 });
-        gyroscope.addEventListener('reading', () => {
-          document.getElementById('gyroscope-data').textContent =
-            `Gyroscope: x=${gyroscope.x.toFixed(2)}, y=${gyroscope.y.toFixed(2)}, z=${gyroscope.z.toFixed(2)}`;
-        });
-        gyroscope.start();
-      } catch (error) {
-        document.getElementById('gyroscope-data').textContent = `Gyroscope error: ${error}`;
-      }
-    }
+    initSensors();
   </script>
 </body>
 
