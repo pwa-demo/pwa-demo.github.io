@@ -66,31 +66,36 @@
     }
 
     async function initSensors() {
-      if ('Accelerometer' in window && 'Gyroscope' in window && 'Magnetometer' in window) {
+      if ('Accelerometer' in window) {
         const accelerometerPermission = await requestSensorPermission('accelerometer');
-        const gyroscopePermission = await requestSensorPermission('gyroscope');
-        const magnetometerPermission = await requestSensorPermission('magnetometer');
-
         if (accelerometerPermission) {
           startSensor(Accelerometer, 'accelerometer-data');
         } else {
           document.getElementById('accelerometer-data').textContent = 'Permission to use accelerometer was denied.';
         }
+      } else {
+        document.getElementById('accelerometer-data').textContent = 'Accelerometer not supported by your browser.';
+      }
 
+      if ('Gyroscope' in window) {
+        const gyroscopePermission = await requestSensorPermission('gyroscope');
         if (gyroscopePermission) {
           startSensor(Gyroscope, 'gyroscope-data');
         } else {
           document.getElementById('gyroscope-data').textContent = 'Permission to use gyroscope was denied.';
         }
+      } else {
+        document.getElementById('gyroscope-data').textContent = 'Gyroscope not supported by your browser.';
+      }
 
+      if ('Magnetometer' in window) {
+        const magnetometerPermission = await requestSensorPermission('magnetometer');
         if (magnetometerPermission) {
           startSensor(Magnetometer, 'magnetometer-data');
         } else {
           document.getElementById('magnetometer-data').textContent = 'Permission to use magnetometer was denied.';
         }
       } else {
-        document.getElementById('accelerometer-data').textContent = 'Accelerometer not supported by your browser.';
-        document.getElementById('gyroscope-data').textContent = 'Gyroscope not supported by your browser.';
         document.getElementById('magnetometer-data').textContent = 'Magnetometer not supported by your browser.';
       }
     }
