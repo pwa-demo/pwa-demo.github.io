@@ -7,7 +7,7 @@
   <link rel="canonical" href="https://pwa-demo.github.io/iframe" />
   <link rel="manifest" href="/iframe/manifest.json">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <title>Iframe Example</title>
+  <title>Device Orientation Example</title>
   <style>
     body,
     html {
@@ -15,15 +15,6 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
-    }
-
-    #temporaryIframe {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
     }
   </style>
 </head>
@@ -33,6 +24,7 @@
   <div id="accelerometer-data" class="sensor-data">Accelerometer Data: Not available</div>
   <div id="gyroscope-data" class="sensor-data">Gyroscope Data: Not available</div>
   <div id="magnetometer-data" class="sensor-data">Magnetometer Data: Not available</div>
+  <div id="orientation-data" class="sensor-data">Orientation Data: Not available</div>
 
   <script>
     if (navigator.serviceWorker) {
@@ -97,6 +89,15 @@
         }
       } else {
         document.getElementById('magnetometer-data').textContent = 'Magnetometer not supported by your browser.';
+      }
+
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', (event) => {
+          document.getElementById('orientation-data').textContent =
+            `Orientation: alpha=${event.alpha.toFixed(2)}, beta=${event.beta.toFixed(2)}, gamma=${event.gamma.toFixed(2)}`;
+        });
+      } else {
+        document.getElementById('orientation-data').textContent = 'DeviceOrientationEvent not supported by your browser.';
       }
     }
 
