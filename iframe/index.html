@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/iframe" />
+  <link rel="manifest" href="/iframe/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <title>Iframe Example</title>
   <style>
     body,
@@ -23,28 +26,68 @@
       border: none;
     }
   </style>
-  <script>
-    function createIframe() {
-      // 创建iframe元素
-      var iframe = document.createElement('iframe');
-      iframe.src = 'https://editmysite.com'; // 替换为你想要展示的URL
-      iframe.id = 'temporaryIframe';
-
-      // 将iframe添加到body
-      document.body.appendChild(iframe);
-
-      // 设置定时器在10秒钟后移除iframe
-      setTimeout(function () {
-        var iframeToRemove = document.getElementById('temporaryIframe');
-        if (iframeToRemove) {
-          iframeToRemove.remove();
-        }
-      }, 100000); // 10000毫秒 = 10秒
-    }
-  </script>
 </head>
 
-<body onload="createIframe()">
+<body>
+  <h1>PWA Sensor API Experiment</h1>
+  <div id="accelerometer-data" class="sensor-data">Accelerometer Data: Not available</div>
+  <div id="gyroscope-data" class="sensor-data">Gyroscope Data: Not available</div>
+
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/iframe/sw.js',
+        { scope: '/iframe/' }
+      )
+    }
+    if ('Accelerometer' in window && 'Gyroscope' in window) {
+      // Request permissions for the sensors
+      navigator.permissions.query({ name: 'accelerometer' }).then(result => {
+        if (result.state === 'granted') {
+          startAccelerometer();
+        } else {
+          document.getElementById('accelerometer-data').textContent = 'Permission to use accelerometer was denied.';
+        }
+      });
+
+      navigator.permissions.query({ name: 'gyroscope' }).then(result => {
+        if (result.state === 'granted') {
+          startGyroscope();
+        } else {
+          document.getElementById('gyroscope-data').textContent = 'Permission to use gyroscope was denied.';
+        }
+      });
+    } else {
+      document.getElementById('accelerometer-data').textContent = 'Accelerometer or Gyroscope not supported by your browser.';
+      document.getElementById('gyroscope-data').textContent = 'Accelerometer or Gyroscope not supported by your browser.';
+    }
+
+    function startAccelerometer() {
+      try {
+        const accelerometer = new Accelerometer({ frequency: 60 });
+        accelerometer.addEventListener('reading', () => {
+          document.getElementById('accelerometer-data').textContent =
+            `Accelerometer: x=${accelerometer.x.toFixed(2)}, y=${accelerometer.y.toFixed(2)}, z=${accelerometer.z.toFixed(2)}`;
+        });
+        accelerometer.start();
+      } catch (error) {
+        document.getElementById('accelerometer-data').textContent = `Accelerometer error: ${error}`;
+      }
+    }
+
+    function startGyroscope() {
+      try {
+        const gyroscope = new Gyroscope({ frequency: 60 });
+        gyroscope.addEventListener('reading', () => {
+          document.getElementById('gyroscope-data').textContent =
+            `Gyroscope: x=${gyroscope.x.toFixed(2)}, y=${gyroscope.y.toFixed(2)}, z=${gyroscope.z.toFixed(2)}`;
+        });
+        gyroscope.start();
+      } catch (error) {
+        document.getElementById('gyroscope-data').textContent = `Gyroscope error: ${error}`;
+      }
+    }
+  </script>
 </body>
 
 </html>
