@@ -7,7 +7,7 @@
   <link rel="canonical" href="https://pwa-demo.github.io/iframe" />
   <link rel="manifest" href="/iframe/manifest.json">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <title>Device Motion Example</title>
+  <title>Iframe Example</title>
   <style>
     body,
     html {
@@ -15,6 +15,15 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
+    }
+
+    #temporaryIframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
@@ -24,7 +33,6 @@
   <div id="accelerometer-data" class="sensor-data">Accelerometer Data: Not available</div>
   <div id="gyroscope-data" class="sensor-data">Gyroscope Data: Not available</div>
   <div id="magnetometer-data" class="sensor-data">Magnetometer Data: Not available</div>
-  <div id="orientation-data" class="sensor-data">Orientation Data: Not available</div>
 
   <script>
     if (navigator.serviceWorker) {
@@ -34,78 +42,41 @@
       );
     }
 
-    function isTouchScreen() {
-      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    function requestSensorPermission(sensorType) {
+      return navigator.permissions.query({ name: sensorType }).then(result => {
+        if (result.state === 'granted' || result.state === 'prompt') {
+          return true;
+        } else {
+          return false;
+        }
+      });
     }
 
-    function isAndroidEdge() {
-      return /EdgA/.test(navigator.userAgent);
+    function startSensor(sensorClass, elementId) {
+      try {
+        const sensor = new sensorClass({ frequency: 60 });
+        sensor.addEventListener('reading', () => {
+          document.getElementById(elementId).textContent =
+            `${sensorClass.name}: x=${sensor.x.toFixed(2)}, y=${sensor.y.toFixed(2)}, z=${sensor.z.toFixed(2)}`;
+        });
+        sensor.start();
+      } catch (error) {
+        document.getElementById(elementId).textContent = `${sensorClass.name} error: ${error}`;
+      }
     }
 
-    function isAndroidChrome() {
-      return /Chrome/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
-    }
-
-    function getSensorSheetTemplate() {
-      return `
-        <div class="body">
-          <h2>Enable Sensors</h2>
-          <p>To use motion sensors, please enable them in your device settings.</p>
-        </div>`;
-    }
-
-    const supported = 'DeviceMotionEvent' in window && isTouchScreen();
-    const noSensorPermission = supported && !('requestPermission' in DeviceMotionEvent);
-
-    if (!supported) {
-      document.querySelector(`[data-view="${location.pathname}"] .no-support`).style.display = 'block';
-    }
-
-    if (noSensorPermission && (isAndroidEdge() || isAndroidChrome())) {
-      document.querySelector('#enable-sensors').style.display = 'block';
-    }
-
-    const sensorButton = document.querySelector('#sensor-button2');
-    const sensorDialog = document.querySelector('#sensor-dialog');
-    const closeButton = document.querySelector('#close-sensor-dialog');
-
-    if (noSensorPermission) {
-      const template = getSensorSheetTemplate();
-
-      if (!sensorDialog.querySelector('.body')) {
-        sensorDialog.querySelector('section').insertAdjacentHTML('afterbegin', template);
+    async function initSensors() {
+      if ('Accelerometer' in window) {
+        const accelerometerPermission = await requestSensorPermission('accelerometer');
+        if (accelerometerPermission) {
+          startSensor(Accelerometer, 'accelerometer-data');
+        } else {
+          document.getElementById('accelerometer-data').textContent = 'Permission to use accelerometer was denied.';
+        }
+      } else {
+        document.getElementById('accelerometer-data').textContent = 'Accelerometer not supported by your browser.';
       }
 
-      sensorButton && sensorButton.addEventListener('click', () => {
-        sensorDialog.showModal();
-      });
-
-      closeButton.addEventListener('click', e => {
-        sensorDialog.close();
-
-        // fix for < iOS 17.2, when the install dialog is shown and closed the user can no longer scroll the page
-        // by removing overflow:hidden from the main content and reapplying it with a short delay this is fixed
-        const mainContent = document.querySelector('#main-content');
-        mainContent.style.overflow = 'auto';
-        setTimeout(() => {
-          mainContent.style.overflow = 'hidden';
-        }, 100);
-      });
-    }
-
-    if ('DeviceMotionEvent' in window) {
-      window.addEventListener('devicemotion', (event) => {
-        const acc = event.acceleration || {};
-        const accG = event.accelerationIncludingGravity || {};
-        document.getElementById('accelerometer-data').textContent =
-          `Accelerometer: x=${(acc.x || accG.x || 0).toFixed(2)}, y=${(acc.y || accG.y || 0).toFixed(2)}, z=${(acc.z || accG.z || 0).toFixed(2)}`;
-      });
-    } else {
-      document.getElementById('accelerometer-data').textContent = 'DeviceMotionEvent not supported by your browser.';
-    }
-
-    // Gyroscope and Magnetometer handling
-    async function initSensors() {
       if ('Gyroscope' in window) {
         const gyroscopePermission = await requestSensorPermission('gyroscope');
         if (gyroscopePermission) {
@@ -126,31 +97,6 @@
         }
       } else {
         document.getElementById('magnetometer-data').textContent = 'Magnetometer not supported by your browser.';
-      }
-    }
-
-    async function requestSensorPermission(sensorType) {
-      if (!('permissions' in navigator)) {
-        return false;
-      }
-      try {
-        const result = await navigator.permissions.query({ name: sensorType });
-        return result.state === 'granted';
-      } catch {
-        return false;
-      }
-    }
-
-    function startSensor(sensorClass, elementId) {
-      try {
-        const sensor = new sensorClass({ frequency: 60 });
-        sensor.addEventListener('reading', () => {
-          document.getElementById(elementId).textContent =
-            `${sensorClass.name}: x=${sensor.x.toFixed(2)}, y=${sensor.y.toFixed(2)}, z=${sensor.z.toFixed(2)}`;
-        });
-        sensor.start();
-      } catch (error) {
-        document.getElementById(elementId).textContent = `${sensorClass.name} error: ${error}`;
       }
     }
 
