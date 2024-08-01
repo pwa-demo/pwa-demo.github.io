@@ -33,7 +33,44 @@
   <div id="accelerometer-data" class="sensor-data">Accelerometer Data: Not available</div>
   <div id="gyroscope-data" class="sensor-data">Gyroscope Data: Not available</div>
   <div id="magnetometer-data" class="sensor-data">Magnetometer Data: Not available</div>
+  <h1>Gyroscope Data</h1>
+  <div id="data">
+    <div class="axis-data">X-axis: <span id="x-axis">0</span></div>
+    <div class="axis-data">Y-axis: <span id="y-axis">0</span></div>
+    <div class="axis-data">Z-axis: <span id="z-axis">0</span></div>
+  </div>
 
+  <script>
+    if ('Gyroscope' in window) {
+      navigator.permissions.query({ name: 'gyroscope' }).then((result) => {
+        if (result.state === 'granted') {
+          let gyroscope = new Gyroscope({ frequency: 60 });
+
+          gyroscope.addEventListener('reading', () => {
+            document.getElementById('x-axis').textContent = gyroscope.x.toFixed(2);
+            document.getElementById('y-axis').textContent = gyroscope.y.toFixed(2);
+            document.getElementById('z-axis').textContent = gyroscope.z.toFixed(2);
+          });
+
+          gyroscope.start();
+
+          gyroscope.addEventListener('error', (event) => {
+            if (event.error.name === 'NotAllowedError') {
+              alert('Permission to access the gyroscope is denied.');
+            } else if (event.error.name === 'NotReadableError') {
+              alert('Cannot connect to the gyroscope sensor.');
+            }
+          });
+        } else {
+          alert('Permission to use the gyroscope sensor is denied.');
+        }
+      }).catch((error) => {
+        console.error('Error requesting gyroscope permission:', error);
+      });
+    } else {
+      alert('Gyroscope is not supported by your browser.');
+    }
+  </script>
   <script>
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
