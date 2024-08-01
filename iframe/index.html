@@ -40,7 +40,7 @@
     <div class="axis-data">Z-axis: <span id="z-axis">0</span></div>
   </div>
 
-  <script>
+  <!-- <script>
     if ('Gyroscope' in window) {
       navigator.permissions.query({ name: 'gyroscope' }).then((result) => {
         if (result.state === 'granted') {
@@ -70,7 +70,7 @@
     } else {
       alert('Gyroscope is not supported by your browser.');
     }
-  </script>
+  </script> -->
   <script>
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
