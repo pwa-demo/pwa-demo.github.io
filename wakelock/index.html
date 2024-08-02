@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" href="https://pwa-demo.github.io/wakelock" />
+  <link rel="manifest" href="/wakelock/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    #log {
+      border: 1px solid #ccc;
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Wake Lock Example</h1>
+  <label>
+    <input type="checkbox" id="wake-lock"> Enable Wake Lock
+  </label>
+  <div id="log"></div>
+
+  <script>
+    const wakeLockSwitch = document.querySelector('#wake-lock');
+    const logDiv = document.querySelector('#log');
+
+    let wakeLock = null;
+
+    const logToDOM = (message) => {
+      const p = document.createElement('p');
+      p.textContent = message;
+      logDiv.appendChild(p);
+    };
+
+    const requestWakeLock = async () => {
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+
+        wakeLock.addEventListener('release', () => {
+          logToDOM('Wake Lock was released');
+        });
+        logToDOM('Wake Lock is active');
+      } catch (err) {
+        logToDOM(`${err.name}, ${err.message}`);
+      }
+    };
+
+    const releaseWakeLock = () => {
+      logToDOM('Releasing wakeLock');
+
+      wakeLock.release();
+      wakeLock = null;
+    };
+
+    wakeLockSwitch.addEventListener('change', (event) => {
+      const checked = event.target.checked;
+
+      checked ? requestWakeLock() : releaseWakeLock();
+    });
+
+
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/wakelock/sw.js',
+        { scope: '/wakelock/' }
+      )
+    }
+
+
+
+  </script>
+
+</body>
+
+</html>
