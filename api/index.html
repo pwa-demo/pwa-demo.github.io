@@ -26,6 +26,21 @@
 <body>
   <h1>Welcome to Site A</h1>
   <iframe src="https://pwa-install.github.io/exp/" id="siteB-frame" width="600" height="400"></iframe>
+  <script>
+    const iframe = document.getElementById('siteB-frame');
+
+    // 发送消息到 siteB
+    iframe.onload = () => {
+      iframe.contentWindow.postMessage('Hello from Site A', 'https://siteB.com');
+    };
+
+    // 接收来自 siteB 的消息
+    window.addEventListener('message', event => {
+      if (event.origin === 'https://siteB.com') {
+        console.log('Message from Site B:', event.data);
+      }
+    });
+  </script>
   <div class="container">
     <h1>Permissions and Features</h1>
 
