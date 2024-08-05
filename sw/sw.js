@@ -2,13 +2,7 @@ var staticCacheName = 'pwa';
 
 // service-worker.js
 
-self.addEventListener('install', function (e) {
-  e.waitUntil(
-    caches.open(staticCacheName).then(function (cache) {
-      return cache.addAll(['/']);
-    })
-  );
-});
+self.addEventListener('install', function (e) {});
 
 self.addEventListener('fetch', function (event) {
   console.log(event.request.url);
