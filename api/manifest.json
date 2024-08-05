@@ -4,7 +4,7 @@
   "description": "a Progressive Web App",
   "scope": "/api/",
   "start_url": "/api/",
-  "orientation": "landscape",
+  "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#ffffff",
   "display": "standalone",
