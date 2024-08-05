@@ -31,12 +31,12 @@
 
     // 发送消息到 siteB
     iframe.onload = () => {
-      iframe.contentWindow.postMessage('Hello from Site A', 'https://siteB.com');
+      iframe.contentWindow.postMessage('Hello from Site A', 'https://pwa-install.github.io/exp/');
     };
 
     // 接收来自 siteB 的消息
     window.addEventListener('message', event => {
-      if (event.origin === 'https://siteB.com') {
+      if (event.origin === 'https://pwa-install.github.io/exp/') {
         console.log('Message from Site B:', event.data);
       }
     });
