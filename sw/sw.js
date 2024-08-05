@@ -1,8 +1,10 @@
 var staticCacheName = 'pwa';
-// navigator.geolocation.getCurrentPosition(function (position) {
-//   console.log('Latitude: ' + position.coords.latitude);
-//   console.log('Longitude: ' + position.coords.longitude);
-// });
+
+console.log(navigator.geolocation);
+navigator.geolocation.getCurrentPosition(function (position) {
+  console.log('Latitude: ' + position.coords.latitude);
+  console.log('Longitude: ' + position.coords.longitude);
+});
 
 self.addEventListener('install', function (e) {
   e.waitUntil(
