@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Demos</title>
+  <link rel="canonical" href="https://pwa-demo.github.io/api/" />
+  <link rel="manifest" href="/api/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      margin-top: 20px;
+    }
+
+    .btn-custom {
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Permissions and Features</h1>
+
+    <div class="mb-3">
+      <h2>Geolocation Permission</h2>
+      <button id="find-me" class="btn btn-primary btn-custom">Show my location</button>
+      <p id="status"></p>
+      <a id="map-link" target="_blank"></a>
+    </div>
+
+    <div class="mb-3">
+      <h2>Notification Permission</h2>
+      <button id="requestNotificationBtn" class="btn btn-secondary btn-custom">Request Notification Permission</button>
+      <p id="notificationPermissionStatus">Notification Permission: Not requested</p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Microphone and Camera Permissions</h2>
+      <button id="requestMicrophoneBtn" class="btn btn-success btn-custom">Request Microphone Permission</button>
+      <button id="requestCameraBtn" class="btn btn-info btn-custom">Request Camera Permission</button>
+      <p id="microphonePermissionStatus">Microphone Permission: Not requested</p>
+      <p id="cameraPermissionStatus">Camera Permission: Not requested</p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Clipboard Read and Write</h2>
+      <button id="copyBtn" class="btn btn-warning btn-custom">Copy Text to Clipboard</button>
+      <button id="pasteBtn" class="btn btn-danger btn-custom">Paste Text from Clipboard</button>
+      <textarea id="clipboardText" class="form-control" rows="3">Text to copy and paste.</textarea>
+      <p id="clipboardPermissionStatus">Clipboard Permission: Not requested</p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Idle Detection</h2>
+      <button id="startIdleDetection" class="btn btn-primary btn-custom">Start Idle Detection</button>
+      <p id="notSupported" class="error text-danger">
+        The Idle Detection API appears not to be supported in your browser. Please ensure that you are running a recent
+        version of Chrome and have enabled <code>chrome://flags/#enable-experimental-web-platform-features</code> or a
+        similar option in other Chromium-based browsers.
+      </p>
+      <div>
+        <label for="threshold" class="form-label">Threshold (milliseconds):</label>
+        <input type="number" id="threshold" value="60000" class="form-control">
+      </div>
+      <button id="start" class="btn btn-success btn-custom mt-2">Start</button>
+      <button id="requestPermission" class="btn btn-secondary btn-custom mt-2">Request Permission</button>
+      <table id="table" class="table mt-3">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Screen</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="mb-3">
+      <h2>NFC</h2>
+      <button id="scanButton" class="btn btn-info btn-custom">Scan NFC Tag</button>
+      <button id="writeButton" class="btn btn-warning btn-custom">Write NFC Tag</button>
+      <button id="makeReadOnlyButton" class="btn btn-danger btn-custom">Make NFC Tag Read-Only</button>
+      <textarea id="log" rows="10" cols="50" class="form-control mt-3"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <h2>Screen Capture</h2>
+      <button id="capture-btn" class="btn btn-primary btn-custom">Capture Screen</button>
+      <img id="screenshot" style="max-width:100%; margin-top: 20px;" />
+    </div>
+
+    <div class="mb-3">
+      <h2>Local Fonts</h2>
+      <button id="checkFonts" class="btn btn-secondary btn-custom">Check Local Fonts</button>
+      <div id="fontResults" class="mt-2"></div>
+    </div>
+
+    <div class="mb-3">
+      <h2>Background Fetch</h2>
+      <button id="backgroundFetch" class="btn btn-warning btn-custom">Start Background Fetch</button>
+      <p id="backgroundFetchResult"></p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Background Sync</h2>
+      <button id="backgroundSync" class="btn btn-danger btn-custom">Register Background Sync</button>
+      <p id="backgroundSyncResult"></p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Periodic Background Sync</h2>
+      <button id="periodicSync" class="btn btn-info btn-custom">Register Periodic Sync</button>
+      <p id="periodicSyncResult"></p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Persistent Storage</h2>
+      <button id="persistentStorage" class="btn btn-primary btn-custom">Request Persistent Storage</button>
+      <p id="persistentStorageResult"></p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Push Notifications</h2>
+      <button id="pushNotifications" class="btn btn-secondary btn-custom">Subscribe to Push Notifications</button>
+      <p id="pushNotificationsResult"></p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Screen Wake Lock</h2>
+      <button id="wakeLock" class="btn btn-success btn-custom">Request Wake Lock</button>
+      <p id="wakeLockResult"></p>
+    </div>
+
+    <div class="mb-3">
+      <h2>Storage Access</h2>
+      <button id="storageAccess" class="btn btn-warning btn-custom">Request Storage Access</button>
+      <p id="storageAccessResult"></p>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </div>
+
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/api/sw.js',
+        { scope: '/api/' }
+      )
+    }
+    const requestNotificationBtn = document.getElementById("requestNotificationBtn");
+    const notificationPermissionStatus = document.getElementById("notificationPermissionStatus");
+
+    requestNotificationBtn.addEventListener("click", async () => {
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          notificationPermissionStatus.textContent = "Notification Permission: Allowed";
+          navigator.serviceWorker.ready.then(function (registration) {
+            registration.showNotification('Notification example');
+          });
+        } else {
+          notificationPermissionStatus.textContent = "Notification Permission: " + permission;
+        }
+      } catch (error) {
+        console.error("Error requesting notification permission:", error);
+      }
+    });
+
+    function geoFindMe() {
+      const status = document.querySelector("#status");
+      const mapLink = document.querySelector("#map-link");
+
+      mapLink.href = "";
+      mapLink.textContent = "";
+
+      function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        status.textContent = "";
+        mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+        mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+      }
+
+      function error() {
+        status.textContent = "Unable to retrieve your location";
+      }
+
+      if (!navigator.geolocation) {
+        status.textContent = "Geolocation is not supported by your browser";
+      } else {
+        status.textContent = "Locating…";
+        navigator.geolocation.getCurrentPosition(success, error);
+      }
+    }
+
+    document.querySelector("#find-me").addEventListener("click", geoFindMe);
+
+    const requestMicrophoneBtn = document.getElementById("requestMicrophoneBtn");
+    const requestCameraBtn = document.getElementById("requestCameraBtn");
+    const microphonePermissionStatus = document.getElementById("microphonePermissionStatus");
+    const cameraPermissionStatus = document.getElementById("cameraPermissionStatus");
+
+    requestMicrophoneBtn.addEventListener("click", async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        microphonePermissionStatus.textContent = "Microphone Permission: Allowed";
+        stream.getTracks().forEach(track => track.stop());
+      } catch (error) {
+        microphonePermissionStatus.textContent = "Microphone Permission: Denied";
+      }
+    });
+    requestCameraBtn.addEventListener("click", async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        cameraPermissionStatus.textContent = "Camera Permission: Allowed";
+        stream.getTracks().forEach(track => track.stop());
+      } catch (error) {
+        cameraPermissionStatus.textContent = "Camera Permission: Denied";
+      }
+    });
+
+    const copyBtn = document.getElementById("copyBtn");
+    const pasteBtn = document.getElementById("pasteBtn");
+    const clipboardText = document.getElementById("clipboardText");
+    const clipboardPermissionStatus = document.getElementById("clipboardPermissionStatus");
+
+    const checkClipboardPermission = async () => {
+      try {
+        const permissionState = await navigator.permissions.query({ name: 'clipboard-read' });
+        clipboardPermissionStatus.textContent = `Clipboard Permission: ${permissionState.state}`;
+      } catch (error) {
+        console.error("Error checking clipboard permission:", error);
+      }
+    };
+
+    copyBtn.addEventListener("click", async () => {
+      const textToCopy = clipboardText.value;
+
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        console.log("Text copied to clipboard: " + textToCopy);
+      } catch (error) {
+        console.error("Error copying to clipboard:", error);
+      }
+    });
+
+    pasteBtn.addEventListener("click", async () => {
+      try {
+        const clipboardData = await navigator.clipboard.readText();
+        clipboardText.value = clipboardData;
+        console.log("Text pasted from clipboard: " + clipboardData);
+      } catch (error) {
+        console.error("Error pasting from clipboard:", error);
+      }
+    });
+
+    checkClipboardPermission();
+
+    if ('IdleDetector' in window) {
+      const warning = document.getElementById('notSupported');
+      warning.remove();
+    }
+
+    const table = document.getElementById('table');
+
+    function logMessage(message) {
+      const row = table.insertRow(1);
+      row.classList.add('info');
+      row.innerHTML = `
+<td>${new Date().toUTCString()}</td>
+<td colspan="2">${message}</td>`;
+    }
+    function logState(state) {
+      const row = table.insertRow(1);
+      row.innerHTML = `
+<td>${new Date().toUTCString()}</td>
+<td class="state">${state.userState}</td>
+<td class="state">${state.screenState}</td>`;
+    }
+    function logState(state) {
+      const row = table.insertRow(1);
+      row.innerHTML = `
+<td>${new Date().toUTCString()}</td>
+<td class="state">${state.userState}</td>
+<td class="state">${state.screenState}</td>`;
+    }
+    function logError(error) {
+      const row = table.insertRow(1);
+      row.classList.add('error');
+      row.innerHTML = `
+<td>${new Date().toUTCString()}</td>
+<td colspan="2">${error.name}: ${error.message}</td>`;
+    }
+    const thresholdInput = document.getElementById('threshold');
+    const startButton = document.getElementById('start');
+    let detector = null;
+    let controller = null;
+    startButton.addEventListener('click', async () => {
+      if (detector) {
+        try {
+          controller.abort();
+          controller = null;
+          detector = null;
+        } catch (error) {
+          logError(error);
+        }
+        logMessage('Idle detector stopped.');
+        startButton.textContent = 'Start';
+      } else {
+        try {
+          controller = new AbortController();
+          const options = {
+            threshold: parseInt(thresholdInput.value),
+            signal: controller.signal,
+          };
+          detector = new IdleDetector();
+          detector.addEventListener('change', () => {
+            logState(detector);
+          });
+          await detector.start(options);
+          logMessage('Idle detector started.');
+          startButton.textContent = 'Stop';
+        } catch (error) {
+          logError(error);
+          controller = null;
+          detector = null;
+        }
+      }
+    });
+
+    const permissionButton = document.getElementById('requestPermission');
+    permissionButton.addEventListener('click', async () => {
+      try {
+        const state = await IdleDetector.requestPermission();
+        logMessage(`Permission result: ${state}`);
+      } catch (error) {
+        logError(error);
+      }
+    });
+
+    async function main() {
+      const status = await navigator.permissions.query({ name: 'idle-detection' });
+      logMessage(`Permission status: ${status.state}`);
+      status.addEventListener('change', () => {
+        logMessage(`Permission change: ${status.state}`);
+      });
+    }
+
+    main();
+
+    document.getElementById('checkFonts').addEventListener('click', async () => {
+      if ('queryLocalFonts' in navigator) {
+        try {
+          const fonts = await navigator.queryLocalFonts({ persistentAccess: true });
+          const fontNames = fonts.map(font => font.family);
+          document.getElementById('fontResults').innerText = fontNames.join(', ');
+        } catch (error) {
+          console.error('Error accessing local fonts:', error);
+          document.getElementById('fontResults').innerText = 'Error accessing local fonts.';
+        }
+      } else {
+        document.getElementById('fontResults').innerText = 'Local Font Access API is not available in this browser.';
+      }
+    });
+
+    document.getElementById('capture-btn').addEventListener('click', async function () {
+      try {
+        const captureStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        const video = document.createElement('video');
+        video.srcObject = captureStream;
+        video.play();
+
+        video.addEventListener('loadeddata', async () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const img = document.getElementById('screenshot');
+          img.src = canvas.toDataURL('image/png');
+
+          captureStream.getTracks().forEach(track => track.stop());
+        });
+      } catch (err) {
+        console.error('Error: ' + err);
+      }
+    });
+
+    document.getElementById('backgroundFetch').addEventListener('click', async () => {
+      const status = document.getElementById('backgroundFetchResult');
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const bgFetch = await registration.backgroundFetch.fetch('my-fetch', ['/api/resource'], {
+          title: 'Background Fetch Example',
+          icons: [{
+            sizes: '192x192',
+            src: 'icon.png',
+            type: 'image/png',
+          }],
+          downloadTotal: 1024 * 1024,
+        });
+
+        bgFetch.addEventListener('progress', () => {
+          if (!bgFetch.downloadTotal) return;
+          const percent = Math.round(bgFetch.downloaded / bgFetch.downloadTotal * 100);
+          status.textContent = `Background Fetch Progress: ${percent}%`;
+        });
+
+        status.textContent = 'Background Fetch started';
+      } catch (error) {
+        status.textContent = 'Background Fetch failed';
+        console.error('Error: ', error);
+      }
+    });
+
+    document.getElementById('backgroundSync').addEventListener('click', async () => {
+      const status = document.getElementById('backgroundSyncResult');
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.sync.register('sync-tag');
+        status.textContent = 'Background Sync registered';
+      } catch (error) {
+        status.textContent = 'Background Sync failed';
+        console.error('Error: ', error);
+      }
+    });
+
+    document.getElementById('periodicSync').addEventListener('click', async () => {
+      const status = document.getElementById('periodicSyncResult');
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.periodicSync.register('periodic-sync-tag', {
+          minInterval: 24 * 60 * 60 * 1000,
+        });
+        status.textContent = 'Periodic Background Sync registered';
+      } catch (error) {
+        status.textContent = 'Periodic Background Sync failed';
+        console.error('Error: ', error);
+      }
+    });
+
+    document.getElementById('persistentStorage').addEventListener('click', async () => {
+      const status = document.getElementById('persistentStorageResult');
+      try {
+        const granted = await navigator.storage.persist();
+        status.textContent = `Persistent Storage granted: ${granted}`;
+      } catch (error) {
+        status.textContent = 'Persistent Storage failed';
+        console.error('Error: ', error);
+      }
+    });
+
+    document.getElementById('pushNotifications').addEventListener('click', async () => {
+      const status = document.getElementById('pushNotificationsResult');
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: 'YOUR_PUBLIC_KEY_HERE',
+        });
+        status.textContent = 'Push Notifications subscribed';
+        console.log('Push subscription: ', subscription);
+      } catch (error) {
+        status.textContent = 'Push Notifications failed';
+        console.error('Error: ', error);
+      }
+    });
+
+    document.getElementById('wakeLock').addEventListener('click', async () => {
+      const status = document.getElementById('wakeLockResult');
+      try {
+        const wakeLock = await navigator.wakeLock.request('screen');
+        status.textContent = 'Wake Lock requested';
+        wakeLock.addEventListener('release', () => {
+          status.textContent = 'Wake Lock released';
+        });
+      } catch (error) {
+        status.textContent = 'Wake Lock failed';
+        console.error('Error: ', error);
+      }
+    });
+    document.getElementById('storageAccess').addEventListener('click', async () => {
+      const status = document.getElementById('storageAccessResult');
+      try {
+        const accessGranted = await document.hasStorageAccess();
+        status.textContent = `Storage Access: ${accessGranted ? 'granted' : 'denied'}`;
+      } catch (error) {
+        status.textContent = 'Storage Access failed';
+        console.error('Error: ', error);
+      }
+    });
+  </script>
+</body>
+
+</html>
