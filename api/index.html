@@ -534,7 +534,7 @@
     document.getElementById('checkFonts').addEventListener('click', async () => {
       if ('queryLocalFonts' in navigator) {
         try {
-          const fonts = await navigator.queryLocalFonts({ persistentAccess: true });
+          const fonts = await window.queryLocalFonts();
           const fontCount = fonts.length;
           document.getElementById('fontResults').innerText = `Total number of fonts: ${fontCount}`;
         } catch (error) {
