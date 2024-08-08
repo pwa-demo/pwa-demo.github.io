@@ -24,6 +24,31 @@
 </head>
 
 <body>
+  <div class="mb-3">
+    <h2>Local Fonts</h2>
+    <button id="checkFonts" class="btn btn-secondary btn-custom">Check Local Fonts</button>
+    <div id="fontResults" class="mt-2"></div>
+  </div>
+
+  <script>
+    document.getElementById('checkFonts').addEventListener('click', async () => {
+      if ('queryLocalFonts' in navigator) {
+        try {
+          console.log('queryLocalFonts API is available');
+          const fonts = await window.queryLocalFonts();
+          const fontCount = fonts.length;
+          console.log(`Number of fonts retrieved: ${fontCount}`);
+          document.getElementById('fontResults').innerText = `Total number of fonts: ${fontCount}`;
+        } catch (error) {
+          console.error('Error accessing local fonts:', error);
+          document.getElementById('fontResults').innerText = 'Error accessing local fonts.';
+        }
+      } else {
+        console.log('Local Font Access API is not available in this browser.');
+        document.getElementById('fontResults').innerText = 'Local Font Access API is not available in this browser.';
+      }
+    });
+  </script>
   <h1>Welcome to Site A</h1>
   <iframe sandbox="allow-storage-access-by-user-activation
   allow-scripts
@@ -515,31 +540,6 @@
       } catch (error) {
         status.textContent = 'Storage Access failed';
         console.error('Error: ', error);
-      }
-    });
-  </script>
-  <div class="mb-3">
-    <h2>Local Fonts</h2>
-    <button id="checkFonts" class="btn btn-secondary btn-custom">Check Local Fonts</button>
-    <div id="fontResults" class="mt-2"></div>
-  </div>
-
-  <script>
-    document.getElementById('checkFonts').addEventListener('click', async () => {
-      if ('queryLocalFonts' in navigator) {
-        try {
-          console.log('queryLocalFonts API is available');
-          const fonts = await window.queryLocalFonts();
-          const fontCount = fonts.length;
-          console.log(`Number of fonts retrieved: ${fontCount}`);
-          document.getElementById('fontResults').innerText = `Total number of fonts: ${fontCount}`;
-        } catch (error) {
-          console.error('Error accessing local fonts:', error);
-          document.getElementById('fontResults').innerText = 'Error accessing local fonts.';
-        }
-      } else {
-        console.log('Local Font Access API is not available in this browser.');
-        document.getElementById('fontResults').innerText = 'Local Font Access API is not available in this browser.';
       }
     });
   </script>
