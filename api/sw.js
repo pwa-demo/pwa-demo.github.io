@@ -8,6 +8,33 @@ navigator.permissions
   .then(function (permissionStatus) {
     console.log('geolocation permission state is ', permissionStatus.state);
 
+    if (permissionStatus.state === 'granted') {
+      // Permission is granted, get the current position
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          console.log('Latitude: ' + position.coords.latitude);
+          console.log('Longitude: ' + position.coords.longitude);
+        },
+        function (error) {
+          console.error('Error getting location: ', error);
+        }
+      );
+    } else if (permissionStatus.state === 'prompt') {
+      // Permission is prompt, ask for permission and then get the position
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          console.log('Latitude: ' + position.coords.latitude);
+          console.log('Longitude: ' + position.coords.longitude);
+        },
+        function (error) {
+          console.error('Error getting location: ', error);
+        }
+      );
+    } else {
+      // Permission is denied
+      console.warn('Geolocation permission denied');
+    }
+
     permissionStatus.onchange = function () {
       console.log('geolocation permission state has changed to ', this.state);
     };
