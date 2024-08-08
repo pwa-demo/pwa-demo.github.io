@@ -518,6 +518,34 @@
       }
     });
   </script>
+  <div class="mb-3">
+    <h2>Local Fonts</h2>
+    <button id="checkFonts" class="btn btn-secondary btn-custom">Check Local Fonts</button>
+    <div id="fontResults" class="mt-2"></div>
+  </div>
+
+  <!-- Existing sections omitted for brevity -->
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </div>
+
+  <script>
+    document.getElementById('checkFonts').addEventListener('click', async () => {
+      if ('queryLocalFonts' in navigator) {
+        try {
+          const fonts = await navigator.queryLocalFonts({ persistentAccess: true });
+          const fontCount = fonts.length;
+          document.getElementById('fontResults').innerText = `Total number of fonts: ${fontCount}`;
+        } catch (error) {
+          console.error('Error accessing local fonts:', error);
+          document.getElementById('fontResults').innerText = 'Error accessing local fonts.';
+        }
+      } else {
+        document.getElementById('fontResults').innerText = 'Local Font Access API is not available in this browser.';
+      }
+    });
+  </script>
 </body>
 
 </html>
