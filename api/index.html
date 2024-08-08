@@ -140,11 +140,6 @@
       <img id="screenshot" style="max-width:100%; margin-top: 20px;" />
     </div>
 
-    <div class="mb-3">
-      <h2>Local Fonts</h2>
-      <button id="checkFonts" class="btn btn-secondary btn-custom">Check Local Fonts</button>
-      <div id="fontResults" class="mt-2"></div>
-    </div>
 
     <div class="mb-3">
       <h2>Background Fetch</h2>
@@ -176,11 +171,47 @@
       <p id="pushNotificationsResult"></p>
     </div>
 
-    <div class="mb-3">
+    <div class="container">
       <h2>Screen Wake Lock</h2>
-      <button id="wakeLock" class="btn btn-success btn-custom">Request Wake Lock</button>
+      <input type="checkbox" id="wake-lock" class="form-check-input">
+      <label for="wake-lock" class="form-check-label">Enable Wake Lock</label>
       <p id="wakeLockResult"></p>
     </div>
+
+    <script>
+      const wakeLockSwitch = document.querySelector('#wake-lock');
+      let wakeLock = null;
+
+      const requestWakeLock = async () => {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => {
+            document.getElementById('wakeLockResult').innerText = 'Wake Lock was released';
+            console.log('Wake Lock was released');
+          });
+          document.getElementById('wakeLockResult').innerText = 'Wake Lock is active';
+          console.log('Wake Lock is active');
+        }
+        catch (err) {
+          document.getElementById('wakeLockResult').innerText = `${err.name}, ${err.message}`;
+          console.error(`${err.name}, ${err.message}`);
+        }
+      };
+
+      const releaseWakeLock = () => {
+        console.log('releasing wakeLock');
+        document.getElementById('wakeLockResult').innerText = 'releasing wakeLock';
+        if (wakeLock) {
+          wakeLock.release();
+          wakeLock = null;
+        }
+      };
+
+      wakeLockSwitch.addEventListener('change', ({ target }) => {
+        const { checked } = target;
+        checked ? requestWakeLock() : releaseWakeLock();
+      });
+    </script>
 
     <div class="mb-3">
       <h2>Storage Access</h2>
