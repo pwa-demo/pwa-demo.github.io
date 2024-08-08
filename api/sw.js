@@ -3,18 +3,7 @@ self.addEventListener('install', (event) => {
   // Add a call to skipWaiting here if you want to activate the SW immediately
   self.skipWaiting();
 });
-navigator.permissions
-  .query({ name: 'geolocation' })
-  .then(function (permissionStatus) {
-    console.log('geolocation permission state is ', permissionStatus.state);
-
-    permissionStatus.onchange = function () {
-      console.log('geolocation permission state has changed to ', this.state);
-    };
-  })
-  .catch(function (error) {
-    console.log('Error occurred while querying geolocation permission:', error);
-  });
+Notification.requestPermission();
 
 self.addEventListener('activate', (event) => {
   console.log('Service Worker activating.');
