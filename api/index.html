@@ -32,7 +32,7 @@
 
   <script>
     document.getElementById('checkFonts').addEventListener('click', async () => {
-      if ('queryLocalFonts' in navigator) {
+      if ('queryLocalFonts' in window) {
         try {
           console.log('queryLocalFonts API is available');
           const fonts = await window.queryLocalFonts();
