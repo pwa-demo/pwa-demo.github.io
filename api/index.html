@@ -25,7 +25,9 @@
 
 <body>
   <h1>Welcome to Site A</h1>
-  <iframe src="https://pwa-install.github.io/exp/" id="siteB-frame" width="600" height="400"></iframe>
+  <iframe sandbox="allow-storage-access-by-user-activation
+  allow-scripts
+  allow-same-origin" src="https://pwa-install.github.io/exp/" id="siteB-frame" width="600" height="400"></iframe>
   <script>
     const iframe = document.getElementById('siteB-frame');
 
