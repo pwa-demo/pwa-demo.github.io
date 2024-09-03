@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starbucks</title>
+  <link rel="canonical" href="https://pwa-demo.github.io/installapi" />
+  <link rel="manifest" href="/installapi/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #installapiButton {
+      /* display: none; */
+      /* Hidden by default */
+      width: 200px;
+      height: 50px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    installapi Starbucks PWA
+  </h1>
+  <button id="installapiButton">installapi PWA</button>
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/installapi/sw.js',
+        { scope: '/installapi/' }
+      );
+    }
+
+    navigator.setAppBadge(12);
+
+    document.getElementById('installapiButton').addEventListener('click', async () => {
+      // Hide the installapi button
+      const installapiButton = document.getElementById('installapiButton');
+      installapiButton.style.display = 'none';
+
+      // Attempt to use navigator.install without passing an ID
+      if (navigator.install) {
+        try {
+          const result = await navigator.install();
+          console.log('Installation successful:', result);
+        } catch (err) {
+          console.error('Installation failed:', err.message);
+        }
+      } else {
+        console.log('Install API is not supported in this browser.');
+      }
+    });
+
+    // Listen for the app being installed
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('PWA has been installed');
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      window.document.appendChild(document.createTextNode('This is running as standalone app'));
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const button = document.getElementById('installapiButton');
+      button.click();
+      button.addEventListener('click', function () {
+        alert('Button was clicked!');
+      });
+
+      // 自动点击按钮
+    });
+  </script>
+
+</body>
+
+</html>
