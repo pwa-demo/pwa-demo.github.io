@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/sensor" />
+  <link rel="manifest" href="/sensor/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <title>sensor Example</title>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #temporarysensor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>PWA Sensor API Experiment</h1>
+  <div id="accelerometer-data" class="sensor-data">Accelerometer Data: Not available</div>
+  <div id="gyroscope-data" class="sensor-data">Gyroscope Data: Not available</div>
+  <div id="magnetometer-data" class="sensor-data">Magnetometer Data: Not available</div>
+
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/sensor/sw.js',
+        { scope: '/sensor/' }
+      );
+    }
+
+    function requestSensorPermission(sensorType) {
+      if (navigator.permissions && navigator.permissions.query) {
+        return navigator.permissions.query({ name: sensorType }).then(result => {
+          if (result.state === 'granted' || result.state === 'prompt') {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      } else {
+        // 如果Permissions API不支持，直接返回true尝试启动传感器
+        return Promise.resolve(true);
+      }
+    }
+
+    function startSensor(sensorClass, elementId) {
+      try {
+        const sensor = new sensorClass({ frequency: 60 });
+
+        sensor.addEventListener('reading', () => {
+          document.getElementById(elementId).textContent =
+            `${sensorClass.name}: x=${sensor.x.toFixed(2)}, y=${sensor.y.toFixed(2)}, z=${sensor.z.toFixed(2)}`;
+        });
+
+        sensor.addEventListener('error', event => {
+          if (event.error.name === 'NotAllowedError') {
+            document.getElementById(elementId).textContent = `${sensorClass.name} error: Permission denied - ${event.error.message}`;
+          } else if (event.error.name === 'NotReadableError') {
+            document.getElementById(elementId).textContent = `${sensorClass.name} error: Cannot connect to the sensor - ${event.error.message}`;
+          } else {
+            document.getElementById(elementId).textContent = `${sensorClass.name} error: ${event.error.name} - ${event.error.message}`;
+          }
+        });
+
+        sensor.start();
+      } catch (error) {
+        document.getElementById(elementId).textContent = `${sensorClass.name} error: ${error.name} - ${error.message}`;
+      }
+    }
+
+    async function initSensors() {
+      if ('Accelerometer' in window) {
+        const accelerometerPermission = await requestSensorPermission('accelerometer');
+        if (accelerometerPermission) {
+          startSensor(Accelerometer, 'accelerometer-data');
+        } else {
+          document.getElementById('accelerometer-data').textContent = 'Permission to use accelerometer was denied.';
+        }
+      } else {
+        document.getElementById('accelerometer-data').textContent = 'Accelerometer not supported by your browser.';
+      }
+
+      if ('Gyroscope' in window) {
+        const gyroscopePermission = await requestSensorPermission('gyroscope');
+        if (gyroscopePermission) {
+          startSensor(Gyroscope, 'gyroscope-data');
+        } else {
+          document.getElementById('gyroscope-data').textContent = 'Permission to use gyroscope was denied.';
+        }
+      } else {
+        document.getElementById('gyroscope-data').textContent = 'Gyroscope not supported by your browser.';
+      }
+
+      if ('Magnetometer' in window) {
+        const magnetometerPermission = await requestSensorPermission('magnetometer');
+        if (magnetometerPermission) {
+          startSensor(Magnetometer, 'magnetometer-data');
+        } else {
+          document.getElementById('magnetometer-data').textContent = 'Permission to use magnetometer was denied.';
+        }
+      } else {
+        document.getElementById('magnetometer-data').textContent = 'Magnetometer not supported by your browser.';
+      }
+    }
+
+    initSensors();
+  </script>
+</body>
+
+</html>
