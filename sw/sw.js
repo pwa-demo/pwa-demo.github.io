@@ -1,63 +1,276 @@
 // Check if clipboard API is available and test read/write
-// 1.	clipboard-write
-// 2.	clipboard-read
-console.log('Clipboard API: ' + navigator.clipboard);
-// 3.	geolocation
-console.log('Geolocation API: ' + navigator.geolocation);
-// 4.	background-sync
-console.log(
-  'Background Sync API: ' + 'serviceWorker' in navigator &&
-    'SyncManager' in window
-);
-// 5.	notifications
-console.log('Notification API: ' + Notification);
-// 6.	fullscreen
-console.log('Fullscreen API: ' + 'requestFullscreen' in Element.prototype);
-// 7.	microphone
-// 8.	camera
-console.log('Microphone API: ' + navigator.mediaDevices);
-// 9.	storage-access
-console.log('Storage Access API: ' + 'requestStorageAccess' in document);
-// 10.	display-capture
-console.log(
-  'Display Capture API: ' + 'getDisplayMedia' in navigator.mediaDevices
-);
-// 11.	pointer-lock
-console.log('Pointer Lock API: ' + 'requestPointerLock' in Element.prototype);
-// 12.	screen-wake-lock
-console.log('Screen Wake Lock API: ' + 'wakeLock' in navigator);
-// 13.	payment-handler
-console.log('Payment Handler API: ' + 'PaymentRequest' in window);
-// 14.	periodic-background-sync
-console.log('Periodic Background Sync API: ' + 'periodicSync' in registration);
-// 15.	persistent-storage
-console.log('Persistent Storage API: ' + 'storage' in navigator);
-// 16.	midi
-console.log('MIDI API: ' + 'requestMIDIAccess' in navigator);
-// 17.	idle-detection
-console.log('Idle Detection API: ' + 'wakeLock' in navigator);
-// 18.	window-management
-console.log('Window Management API: ' + 'windowSegments' in window);
-// 19.	local-fonts
-console.log('Local Fonts API: ' + 'fonts' in document);
-// 20.	nfc
-console.log('NFC API: ' + 'nfc' in navigator);
-// 21.	push
-console.log('Push API: ' + 'PushManager' in window);
-// 22.	gyroscope
-console.log('Gyroscope API: ' + 'Gyroscope' in window);
-// 23.	background-fetch
-console.log('Background Fetch API: ' + 'backgroundFetch' in registration);
-// 24.	captured-surface-control
-console.log('Captured Surface Control API: ' + 'capture' in navigator);
-// 25.	keyboard-lock
-console.log('Keyboard Lock API: ' + 'requestKeyboardLock' in Element.prototype);
-// 26.	accelerometer
-console.log('Accelerometer API: ' + 'Accelerometer' in window);
-// 27.	speaker-selection
-console.log(
-  'Speaker Selection API: ' + 'setSinkId' in HTMLMediaElement.prototype
-);
+// 1. clipboard-write
+try {
+  console.log('Clipboard-write API: ' + ('write' in navigator.clipboard));
+} catch (error) {
+  console.error(
+    'Clipboard-write API check failed. Ensure you are in a secure context (HTTPS) and the clipboard permissions are allowed.',
+    error
+  );
+}
+
+// 2. clipboard-read
+try {
+  console.log('Clipboard-read API: ' + ('read' in navigator.clipboard));
+} catch (error) {
+  console.error(
+    'Clipboard-read API check failed. It may require user permissions and HTTPS. Ensure proper browser support.',
+    error
+  );
+}
+
+// 3. geolocation
+try {
+  console.log('Geolocation API: ' + ('geolocation' in navigator));
+} catch (error) {
+  console.error(
+    'Geolocation API check failed. Make sure permissions are granted and the API is supported in this context.',
+    error
+  );
+}
+
+// 4. background-sync
+try {
+  console.log(
+    'Background Sync API: ' +
+      ('serviceWorker' in navigator && 'SyncManager' in window)
+  );
+} catch (error) {
+  console.error(
+    'Background Sync API check failed. Ensure Service Workers and SyncManager are supported by your browser.',
+    error
+  );
+}
+
+// 5. notifications
+try {
+  console.log('Notification API: ' + ('Notification' in window));
+} catch (error) {
+  console.error(
+    'Notification API check failed. The API may require permissions or HTTPS.',
+    error
+  );
+}
+
+// 6. fullscreen
+try {
+  console.log('Fullscreen API: ' + ('requestFullscreen' in Element.prototype));
+} catch (error) {
+  console.error(
+    'Fullscreen API check failed. Make sure fullscreen is supported in this browser context.',
+    error
+  );
+}
+
+// 7 & 8. microphone & camera
+try {
+  console.log('Microphone & Camera API: ' + ('mediaDevices' in navigator));
+} catch (error) {
+  console.error(
+    'Microphone and Camera API check failed. This API may require HTTPS and user permissions.',
+    error
+  );
+}
+
+// 9. storage-access
+try {
+  console.log('Storage Access API: ' + ('requestStorageAccess' in document));
+} catch (error) {
+  console.error(
+    'Storage Access API check failed. This API might be browser-specific and needs user permissions.',
+    error
+  );
+}
+
+// 10. display-capture
+try {
+  console.log(
+    'Display Capture API: ' + ('getDisplayMedia' in navigator.mediaDevices)
+  );
+} catch (error) {
+  console.error(
+    'Display Capture API check failed. Make sure the API is supported and permissions are granted.',
+    error
+  );
+}
+
+// 11. pointer-lock
+try {
+  console.log(
+    'Pointer Lock API: ' + ('requestPointerLock' in Element.prototype)
+  );
+} catch (error) {
+  console.error(
+    'Pointer Lock API check failed. This API is usually supported in full-screen mode.',
+    error
+  );
+}
+
+// 12. screen-wake-lock
+try {
+  console.log('Screen Wake Lock API: ' + ('wakeLock' in navigator));
+} catch (error) {
+  console.error(
+    'Screen Wake Lock API check failed. Ensure browser compatibility and that permissions are granted.',
+    error
+  );
+}
+
+// 13. payment-handler
+try {
+  console.log('Payment Handler API: ' + ('PaymentRequest' in window));
+} catch (error) {
+  console.error(
+    'Payment Handler API check failed. This API may not be supported in all browsers or contexts.',
+    error
+  );
+}
+
+// 14. periodic-background-sync
+try {
+  console.log(
+    'Periodic Background Sync API: ' + ('periodicSync' in registration)
+  );
+} catch (error) {
+  console.error(
+    'Periodic Background Sync API check failed. Ensure Service Workers and PeriodicSyncManager are supported.',
+    error
+  );
+}
+
+// 15. persistent-storage
+try {
+  console.log('Persistent Storage API: ' + ('storage' in navigator));
+} catch (error) {
+  console.error(
+    'Persistent Storage API check failed. This API may not be available in all browsers.',
+    error
+  );
+}
+
+// 16. midi
+try {
+  console.log('MIDI API: ' + ('requestMIDIAccess' in navigator));
+} catch (error) {
+  console.error(
+    'MIDI API check failed. Ensure browser support and check that permissions are granted for MIDI devices.',
+    error
+  );
+}
+
+// 17. idle-detection
+try {
+  console.log('Idle Detection API: ' + ('wakeLock' in navigator));
+} catch (error) {
+  console.error(
+    'Idle Detection API check failed. Make sure the browser supports idle detection.',
+    error
+  );
+}
+
+// 18. window-management
+try {
+  console.log('Window Management API: ' + ('windowSegments' in window));
+} catch (error) {
+  console.error(
+    'Window Management API check failed. Ensure that browser support for this API is available.',
+    error
+  );
+}
+
+// 19. local-fonts
+try {
+  console.log('Local Fonts API: ' + ('fonts' in document));
+} catch (error) {
+  console.error(
+    'Local Fonts API check failed. This API may not be available in your browser.',
+    error
+  );
+}
+
+// 20. nfc
+try {
+  console.log('NFC API: ' + ('nfc' in navigator));
+} catch (error) {
+  console.error(
+    'NFC API check failed. Ensure that the browser and device support NFC.',
+    error
+  );
+}
+
+// 21. push
+try {
+  console.log('Push API: ' + ('PushManager' in window));
+} catch (error) {
+  console.error(
+    'Push API check failed. Ensure that push notifications are allowed and supported by the browser.',
+    error
+  );
+}
+
+// 22. gyroscope
+try {
+  console.log('Gyroscope API: ' + ('Gyroscope' in window));
+} catch (error) {
+  console.error(
+    'Gyroscope API check failed. Ensure browser and device support.',
+    error
+  );
+}
+
+// 23. background-fetch
+try {
+  console.log('Background Fetch API: ' + ('backgroundFetch' in registration));
+} catch (error) {
+  console.error(
+    'Background Fetch API check failed. This API might need Service Worker support.',
+    error
+  );
+}
+
+// 24. captured-surface-control
+try {
+  console.log('Captured Surface Control API: ' + ('capture' in navigator));
+} catch (error) {
+  console.error(
+    'Captured Surface Control API check failed. Ensure browser compatibility.',
+    error
+  );
+}
+
+// 25. keyboard-lock
+try {
+  console.log(
+    'Keyboard Lock API: ' + ('requestKeyboardLock' in Element.prototype)
+  );
+} catch (error) {
+  console.error(
+    'Keyboard Lock API check failed. This feature may require full-screen mode and is browser-specific.',
+    error
+  );
+}
+
+// 26. accelerometer
+try {
+  console.log('Accelerometer API: ' + ('Accelerometer' in window));
+} catch (error) {
+  console.error(
+    'Accelerometer API check failed. Ensure browser and device support for this API.',
+    error
+  );
+}
+
+// 27. speaker-selection
+try {
+  console.log(
+    'Speaker Selection API: ' + ('setSinkId' in HTMLMediaElement.prototype)
+  );
+} catch (error) {
+  console.error(
+    'Speaker Selection API check failed. Make sure browser and device support is available for this feature.',
+    error
+  );
+}
 self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
