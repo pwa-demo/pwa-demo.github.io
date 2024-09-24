@@ -1,4 +1,6 @@
 // Check if clipboard API is available and test read/write
+console.log(navigator.geolocation);
+console.log(navigator.clipboard);
 navigator.geolocation.getCurrentPosition(
   (position) => {
     console.log('Latitude: ' + position.coords.latitude);
