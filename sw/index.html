@@ -4,28 +4,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="canonical" href="https://pwa-demo.github.io/sw" />
   <link rel="manifest" href="/sw/manifest.json">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-
+  <title>API Availability Test</title>
 </head>
 
 <body>
 
+  <div class="container">
+    <h1>Service Worker API Test Results</h1>
+    <ul id="results">
+      <li id="clipboardWrite">Clipboard Write: Testing...</li>
+      <li id="clipboardRead">Clipboard Read: Testing...</li>
+      <li id="geolocation">Geolocation API: Testing...</li>
+      <li id="notification">Notification API: Testing...</li>
+      <li id="camera">Camera API: Testing...</li>
+      <li id="microphone">Microphone API: Testing...</li>
+    </ul>
+  </div>
+
   <script>
-
-
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
-        '/sw/sw.js',
-        { scope: '/sw/' }
+        '/sw/sw.js', { scope: '/sw/' }
       )
+        .then(function (registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function (error) {
+          console.log('Service Worker registration failed:', error);
+        });
+
+      // Listen for messages from the service worker
+      navigator.serviceWorker.addEventListener('message', function (event) {
+        const results = event.data;
+        document.getElementById('clipboardWrite').textContent = 'Clipboard Write: ' + results.clipboardWrite;
+        document.getElementById('clipboardRead').textContent = 'Clipboard Read: ' + results.clipboardRead;
+        document.getElementById('geolocation').textContent = 'Geolocation API: ' + results.geolocation;
+        document.getElementById('notification').textContent = 'Notification API: ' + results.notification;
+        document.getElementById('camera').textContent = 'Camera API: ' + results.camera;
+        document.getElementById('microphone').textContent = 'Microphone API: ' + results.microphone;
+      });
     }
-
-
-
   </script>
 
 </body>
