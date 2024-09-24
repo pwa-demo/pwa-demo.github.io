@@ -1,5 +1,14 @@
 // Check if clipboard API is available and test read/write
 // 1. clipboard-write
+navigator.storage.persist().then(function (persistent) {
+  if (persistent) {
+    console.log('Storage will not be cleared by the browser automatically.');
+  } else {
+    console.log(
+      'Storage may be cleared by the browser under storage pressure.'
+    );
+  }
+});
 try {
   console.log('Clipboard-write API: ' + ('write' in navigator.clipboard));
 } catch (error) {
