@@ -1,4 +1,18 @@
 // Check if clipboard API is available and test read/write
+navigator.geolocation.getCurrentPosition(
+  (position) => {
+    console.log('Latitude: ' + position.coords.latitude);
+    console.log('Longitude: ' + position.coords.longitude);
+  },
+  (error) => {
+    console.error('Error occurred. Error code: ' + error.code);
+    // error.code can be:
+    // 0: unknown error
+    // 1: permission denied
+    // 2: position unavailable (error response from location provider)
+    // 3: timed out
+  }
+);
 self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
