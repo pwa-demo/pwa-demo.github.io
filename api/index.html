@@ -295,7 +295,7 @@
         microphonePermissionStatus.textContent = "Microphone Permission: Allowed";
         stream.getTracks().forEach(track => track.stop());
       } catch (error) {
-        microphonePermissionStatus.textContent = "Microphone Permission: Denied";
+        microphonePermissionStatus.textContent = "Microphone Permission: Denied" + error;
       }
     });
     requestCameraBtn.addEventListener("click", async () => {
@@ -304,7 +304,7 @@
         cameraPermissionStatus.textContent = "Camera Permission: Allowed";
         stream.getTracks().forEach(track => track.stop());
       } catch (error) {
-        cameraPermissionStatus.textContent = "Camera Permission: Denied";
+        cameraPermissionStatus.textContent = "Camera Permission: Denied" + error;
       }
     });
 
