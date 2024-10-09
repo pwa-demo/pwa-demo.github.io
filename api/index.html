@@ -24,6 +24,52 @@
 </head>
 
 <body>
+  <div class="container">
+    <h1>File System Access API Demo</h1>
+
+    <div class="mb-3">
+      <button id="openFile" class="btn btn-primary btn-custom">打开文件</button>
+      <button id="saveFile" class="btn btn-secondary btn-custom">保存文件</button>
+      <textarea id="fileContent" class="form-control" rows="10" placeholder="文件内容会显示在这里..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    const fileContent = document.getElementById('fileContent');
+
+    // 打开文件并读取内容
+    document.getElementById('openFile').addEventListener('click', async () => {
+      try {
+        const [fileHandle] = await window.showOpenFilePicker();
+        const file = await fileHandle.getFile();
+        const content = await file.text();
+        fileContent.value = content;
+      } catch (error) {
+        console.error('Error opening file:', error);
+      }
+    });
+
+    // 保存文件
+    document.getElementById('saveFile').addEventListener('click', async () => {
+      try {
+        const options = {
+          types: [{
+            description: 'Text Files',
+            accept: {
+              'text/plain': ['.txt'],
+            },
+          }],
+        };
+        const fileHandle = await window.showSaveFilePicker(options);
+        const writable = await fileHandle.createWritable();
+        await writable.write(fileContent.value);
+        await writable.close();
+        alert('文件保存成功！');
+      } catch (error) {
+        console.error('Error saving file:', error);
+      }
+    });
+  </script>
   <div class="mb-3">
     <h2>Local Fonts</h2>
     <button id="checkFonts" class="btn btn-secondary btn-custom">Check Local Fonts</button>
