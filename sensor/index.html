@@ -59,7 +59,7 @@
 
     function startSensor(sensorClass, elementId) {
       try {
-        const sensor = new sensorClass({ frequency: 300 });
+        const sensor = new sensorClass({ frequency: 3000 });
 
         sensor.addEventListener('reading', () => {
           document.getElementById(elementId).textContent =
