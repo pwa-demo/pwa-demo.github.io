@@ -1,3 +1,4 @@
+<!-- attack1a (client) -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,43 +13,76 @@
     .container {
       margin-top: 20px;
     }
+  </style>
+</head>
 
-    .btn-custom {
-      margin-bottom: 10px;
-    }
+<body>
+  <div class="container">
+    <h1>attack1a - Client</h1>
+    <button id="sendRequest" class="btn btn-primary">Send Request to attack1b</button>
+  </div>
 
-    textarea {
-      margin-top: 10px;
+  <script>
+    document.getElementById('sendRequest').addEventListener('click', function () {
+      fetch('https://pwa-demo.github.io/attack1b/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: 'Hello from attack1a!' })
+      }).then(response => response.text())
+        .then(data => console.log('Request sent:', data))
+        .catch(error => console.error('Error:', error));
+    });
+  </script>
+</body>
+
+</html>
+
+<!-- attack1b (server) -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>attack1b Demos</title>
+  <link rel="canonical" href="https://pwa-demo.github.io/attack1b/" />
+  <link rel="manifest" href="/attack1b/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      margin-top: 20px;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Clipboard Content Log</h1>
+    <h1>attack1b - Server</h1>
     <div id="log"></div>
   </div>
 
   <script>
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/attack1a/sw.js').then(function (registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
-      }).catch(function (error) {
-        console.error('Service Worker registration failed:', error);
-      });
-    }
+    // Simulate a server receiving the request
+    window.addEventListener('DOMContentLoaded', (event) => {
+      // Assuming attack1b is receiving a POST request
+      const logDiv = document.getElementById('log');
 
-    // Handle incoming clipboard data from server PWA
-    navigator.serviceWorker.addEventListener('message', event => {
-      if (event.data && event.data.clipboardContent) {
-        const logDiv = document.getElementById('log');
+      // Mocking server response to incoming request
+      function handleRequest(request) {
         const newLog = document.createElement('p');
-        const timestamp = new Date().toLocaleString();
-        const ip = "User IP: (assuming you have a way to get this)"; // You would need to replace this with actual IP-fetching logic.
-        newLog.textContent = `${timestamp} - ${ip} - Clipboard: ${event.data.clipboardContent}`;
+        newLog.textContent = `Received message: ${request.message}`;
         logDiv.appendChild(newLog);
       }
+
+      // Simulating request handling
+      setTimeout(() => {
+        // Simulating a request being received with a fixed message for simplicity
+        handleRequest({ message: 'Hello from attack1a!' });
+      }, 1000);
     });
   </script>
 </body>
+
+</html>

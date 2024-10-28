@@ -1,3 +1,4 @@
+<!-- attack1b (server) -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,32 +13,34 @@
     .container {
       margin-top: 20px;
     }
-
-    .btn-custom {
-      margin-bottom: 10px;
-    }
-
-    textarea {
-      margin-top: 10px;
-    }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Server Clipboard Fetcher</h1>
-    <p>This PWA reads clipboard content every 10 seconds and sends it to attack1a.</p>
+    <h1>attack1b - Server</h1>
+    <div id="log"></div>
   </div>
 
   <script>
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/attack1b/sw.js').then(function (registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
-      }).catch(function (error) {
-        console.error('Service Worker registration failed:', error);
-      });
-    }
+    // Simulate a server receiving the request
+    window.addEventListener('DOMContentLoaded', (event) => {
+      // Assuming attack1b is receiving a POST request
+      const logDiv = document.getElementById('log');
+
+      // Mocking server response to incoming request
+      function handleRequest(request) {
+        const newLog = document.createElement('p');
+        newLog.textContent = `Received message: ${request.message}`;
+        logDiv.appendChild(newLog);
+      }
+
+      // Simulating request handling
+      setTimeout(() => {
+        // Simulating a request being received with a fixed message for simplicity
+        handleRequest({ message: 'Hello from attack1a!' });
+      }, 1000);
+    });
   </script>
 </body>
 
