@@ -24,29 +24,79 @@
 
   <script>
     // Button 1: Send IP and Geolocation
-    document.getElementById('sendLocation').addEventListener('click', async function () {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async function (position) {
+    // Button: Send IP and Geolocation with Enhanced Debugging
+    document.getElementById('sendLocation').addEventListener('click', function () {
+      // Check if the browser supports Geolocation API
+      if (!navigator.geolocation) {
+        console.error('Geolocation is not supported by your browser.');
+        return;
+      }
+
+      // Start retrieving geolocation
+      console.log('Requesting geolocation permission...');
+
+      navigator.geolocation.getCurrentPosition(
+        async function (position) {
+          // Successfully retrieved geolocation
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           const mapLink = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+          console.log(`Geolocation retrieved: Latitude: ${latitude}, Longitude: ${longitude}`);
+
+          // Prepare data to send to server
+          const geolocationData = {
+            latitude,
+            longitude,
+            mapLink,
+            timestamp: new Date().toISOString()
+          };
+          console.log('Sending geolocation data to server:', geolocationData);
 
           // Send geolocation to the server
-          fetch('http://localhost:3000/receive-location', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ latitude, longitude, mapLink })
-          })
-            .then(response => response.json())
-            .then(data => console.log('Location data sent:', data))
-            .catch(error => console.error('Error sending location data:', error));
-        });
-      } else {
-        console.error('Geolocation is not supported by this browser.');
-      }
+          try {
+            const response = await fetch('http://localhost:3000/receive-location', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(geolocationData)
+            });
+
+            if (!response.ok) {
+              throw new Error(`Server responded with status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            console.log('Server response:', responseData);
+          } catch (error) {
+            console.error('Error sending geolocation data to server:', error);
+          }
+        },
+        function (error) {
+          // Handle geolocation errors
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              console.error('User denied the request for Geolocation.');
+              break;
+            case error.POSITION_UNAVAILABLE:
+              console.error('Location information is unavailable.');
+              break;
+            case error.TIMEOUT:
+              console.error('The request to get user location timed out.');
+              break;
+            default:
+              console.error('An unknown error occurred during geolocation retrieval:', error);
+              break;
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
     });
+
 
     // Button 2: Send Clipboard Content
     document.getElementById('sendClipboard').addEventListener('click', async function () {
