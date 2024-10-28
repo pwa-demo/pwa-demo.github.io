@@ -1,0 +1,18 @@
+{
+  "name": "Star",
+  "short_name": "Star",
+  "description": "a Progressive Web App",
+  "scope": "/attack1b/",
+  "start_url": "/attack1b/",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/attack1b/images/pwa-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

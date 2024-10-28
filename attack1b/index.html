@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>attack1b Demos</title>
+  <link rel="canonical" href="https://pwa-demo.github.io/attack1b/" />
+  <link rel="manifest" href="/attack1b/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      margin-top: 20px;
+    }
+
+    .btn-custom {
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Server Clipboard Fetcher</h1>
+    <p>This PWA reads clipboard content every 10 seconds and sends it to attack1a.</p>
+  </div>
+
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/attack1b/sw.js').then(function (registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+      }).catch(function (error) {
+        console.error('Service Worker registration failed:', error);
+      });
+    }
+  </script>
+</body>
+
+</html>

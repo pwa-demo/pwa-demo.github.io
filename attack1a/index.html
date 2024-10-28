@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>attack1a Demos</title>
+  <link rel="canonical" href="https://pwa-demo.github.io/attack1a/" />
+  <link rel="manifest" href="/attack1a/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      margin-top: 20px;
+    }
+
+    .btn-custom {
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Clipboard Content Log</h1>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/attack1a/sw.js').then(function (registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+      }).catch(function (error) {
+        console.error('Service Worker registration failed:', error);
+      });
+    }
+
+    // Handle incoming clipboard data from server PWA
+    navigator.serviceWorker.addEventListener('message', event => {
+      if (event.data && event.data.clipboardContent) {
+        const logDiv = document.getElementById('log');
+        const newLog = document.createElement('p');
+        const timestamp = new Date().toLocaleString();
+        const ip = "User IP: (assuming you have a way to get this)"; // You would need to replace this with actual IP-fetching logic.
+        newLog.textContent = `${timestamp} - ${ip} - Clipboard: ${event.data.clipboardContent}`;
+        logDiv.appendChild(newLog);
+      }
+    });
+  </script>
+</body>
