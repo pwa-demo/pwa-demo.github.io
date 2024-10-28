@@ -58,30 +58,22 @@
 </head>
 
 <body>
-  <div class="container">
-    <h1>attack1b - Server</h1>
-    <div id="log"></div>
-  </div>
-
   <script>
-    // Simulate a server receiving the request
-    window.addEventListener('DOMContentLoaded', (event) => {
-      // Assuming attack1b is receiving a POST request
-      const logDiv = document.getElementById('log');
-
-      // Mocking server response to incoming request
-      function handleRequest(request) {
-        const newLog = document.createElement('p');
-        newLog.textContent = `Received message: ${request.message}`;
-        logDiv.appendChild(newLog);
-      }
-
-      // Simulating request handling
-      setTimeout(() => {
-        // Simulating a request being received with a fixed message for simplicity
-        handleRequest({ message: 'Hello from attack1a!' });
-      }, 1000);
+    document.getElementById('sendRequest').addEventListener('click', function () {
+      fetch('http://localhost:3000/receive-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: 'Hello from attack1a!' })
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Received IP from server:', data.ip);
+        })
+        .catch(error => console.error('Error:', error));
     });
+
   </script>
 </body>
 
