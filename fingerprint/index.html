@@ -117,23 +117,24 @@
       "system-wake-lock",
       "storage-access", "window-management",
       "window-placement",
-      "local-fonts", "speaker-selection", "bluetooth", "captured-surface-control",]) {
+      "local-fonts", "speaker-selection", "bluetooth", "captured-surface-control",
+      "speaker-selection",]) {
       navigator.permissions.query({ name: a }).then(e => { document.getElementById('permissions').innerText += a + ":" + e.state + "\n" }).catch(e => { document.getElementById('permissions').innerText += a + ":" + e + "\n" })
     }
-    // async function checkPermission() {
-    //   try {
-    //     const permissionStatus = await navigator.permissions.query({
-    //       name: 'top-level-storage-access',
-    //       requestedOrigin: 'https://pwa-install.github.io'
-    //     });
+    async function checkPermission() {
+      try {
+        const permissionStatus = await navigator.permissions.query({
+          name: 'top-level-storage-access',
+          requestedOrigin: 'https://pwa-install.github.io'
+        });
 
-    //     document.getElementById('permissionStatus').textContent =
-    //       'top-level-storage-access: ' + permissionStatus.state;
-    //   } catch (error) {
-    //     document.getElementById('permissionStatus').textContent =
-    //       'Error checking permission: ' + error.message;
-    //   }
-    // }
+        document.getElementById('permissionStatus').textContent =
+          'top-level-storage-access: ' + permissionStatus.state;
+      } catch (error) {
+        document.getElementById('permissionStatus').textContent =
+          'Error checking permission: ' + error.message;
+      }
+    }
 
     checkPermission();
     if (navigator.serviceWorker) {
