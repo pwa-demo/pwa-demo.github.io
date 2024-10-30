@@ -4,14 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Platform Detection by Permissions</title>
+  <title>Platform Detection by Permissions and Client Hints</title>
   <link rel="canonical" href="https://pwa-demo.github.io/fingerprint/" />
   <link rel="manifest" href="/fingerprint/manifest.json">
 </head>
 
 <body>
   <div id="platformInfo">Platform Info: Not detected yet</div>
+  <div id="browserInfo">Browser Info: Not detected yet</div>
   <p id="permissions"></p>
+  <button onclick="detectPlatformByPermissions()">Detect Platform by Permissions</button>
+  <button onclick="checkUserAgent()">Check User-Agent</button>
 
   <script>
     async function detectPlatformByPermissions() {
@@ -60,11 +63,51 @@
         }
       }
 
-      // Output platform detection result
-      document.getElementById("platformInfo").textContent = "Platform Info: " + platformDetected;
+      // Output platform detection result based on permissions
+      document.getElementById("platformInfo").textContent = "Platform Info (Permissions): " + platformDetected;
 
+      // Display individual permissions for verification
+      const permissionsDisplay = `Accelerometer: ${accelerometer}\nPayment Handler: ${paymentHandler}\nNFC: ${nfc}\nStorage Access: ${storageAccess}\nBackground Sync: ${backgroundSync}\nPeriodic Background Sync: ${periodicBackgroundSync}`;
+      document.getElementById("permissions").innerText = permissionsDisplay;
+    }
 
-      detectPlatformByPermissions();
+    function checkUserAgent() {
+      let browser = "Unknown Browser";
+      let platform = "Unknown Platform";
+
+      // User-Agent Client Hints based detection
+      if (navigator.userAgentData) {
+        const uaData = navigator.userAgentData;
+        platform = uaData.platform;
+
+        uaData.brands.forEach((brand) => {
+          if (brand.brand.includes("Chromium")) browser = "Chromium-based Browser";
+          if (brand.brand.includes("Google Chrome")) browser = "Google Chrome";
+          if (brand.brand.includes("Microsoft Edge")) browser = "Microsoft Edge";
+          if (brand.brand.includes("Firefox")) browser = "Firefox";
+          if (brand.brand.includes("Opera")) browser = "Opera";
+        });
+
+        // Check if on mobile platform
+        const isMobile = uaData.mobile ? "Mobile" : "Desktop";
+        document.getElementById("browserInfo").textContent = `Browser Info (Client Hints): ${browser} on ${platform} (${isMobile})`;
+      } else {
+        // Fallback for browsers without Client Hints
+        const userAgent = navigator.userAgent.toLowerCase();
+        if (userAgent.includes("android")) platform = "Android";
+        else if (userAgent.includes("iphone") || userAgent.includes("ipad")) platform = "iOS";
+        else if (userAgent.includes("mac")) platform = "MacOS";
+        else if (userAgent.includes("win")) platform = "Windows";
+
+        if (userAgent.includes("chrome") && !userAgent.includes("edg")) browser = "Chrome";
+        else if (userAgent.includes("firefox")) browser = "Firefox";
+        else if (userAgent.includes("safari") && !userAgent.includes("chrome")) browser = "Safari";
+        else if (userAgent.includes("edg")) browser = "Edge";
+        else if (userAgent.includes("opera") || userAgent.includes("opr")) browser = "Opera";
+
+        document.getElementById("browserInfo").textContent = `Browser Info (User-Agent): ${browser} on ${platform}`;
+      }
+    }
   </script>
 </body>
 
