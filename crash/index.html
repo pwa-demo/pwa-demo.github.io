@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crash Demo</title>
+</head>
+
+<body>
+  <script>
+    navigator.permissions.query({ name: "keyboard-lock" }).then(function (result) {
+      console.log(result.state);
+    });
+  </script>
+</body>
+
+</html>
