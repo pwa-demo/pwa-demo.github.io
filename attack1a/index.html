@@ -177,6 +177,24 @@
       }
     });
   </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/attack1a/sw.js')
+          .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+
+            // Send a message to Service Worker to fetch IP
+            if (registration.active) {
+              registration.active.postMessage('fetch-ip');
+            }
+          })
+          .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
 </body>
 
 </html>
