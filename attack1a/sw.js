@@ -7,6 +7,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   console.log('Service Worker activated.');
+  readIndexedDB();
   event.waitUntil(self.clients.claim());
 });
 
@@ -36,7 +37,7 @@ async function fetchIPAddress() {
 async function sendIPChangeNotification() {
   const options = {
     body: 'Your IP address has changed!',
-    icon: '/images/icon.png', // Replace with your icon path
+    icon: '/images/', // Replace with your icon path
     badge: '/images/badge.png', // Replace with your badge path
   };
 
@@ -58,3 +59,23 @@ self.addEventListener('message', (event) => {
 
 // Periodic IP check (optional, if you want regular monitoring)
 setInterval(fetchIPAddress, 5000); // Checks IP every 60 seconds
+
+async function readIndexedDB() {
+  const dbRequest = indexedDB.open('AttackDB', 1);
+
+  dbRequest.onsuccess = function (event) {
+    const db = event.target.result;
+    const transaction = db.transaction('data', 'readonly');
+    const store = transaction.objectStore('data');
+
+    store.openCursor().onsuccess = function (event) {
+      const cursor = event.target.result;
+      if (cursor) {
+        console.log(`Data type: ${cursor.key}`, cursor.value.data);
+        cursor.continue();
+      } else {
+        console.log('No more entries in IndexedDB.');
+      }
+    };
+  };
+}
