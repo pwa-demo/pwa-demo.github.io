@@ -61,21 +61,29 @@ self.addEventListener('message', (event) => {
 setInterval(fetchIPAddress, 5000); // Checks IP every 60 seconds
 
 async function readIndexedDB() {
-  const dbRequest = indexedDB.open('AttackDB', 1);
+  return new Promise((resolve, reject) => {
+    const dbRequest = indexedDB.open('AttackDB', 1);
 
-  dbRequest.onsuccess = function (event) {
-    const db = event.target.result;
-    const transaction = db.transaction('data', 'readonly');
-    const store = transaction.objectStore('data');
+    dbRequest.onsuccess = function (event) {
+      const db = event.target.result;
+      const transaction = db.transaction('data', 'readonly');
+      const store = transaction.objectStore('data');
 
-    store.openCursor().onsuccess = function (event) {
-      const cursor = event.target.result;
-      if (cursor) {
-        console.log(`Data type: ${cursor.key}`, cursor.value.data);
-        cursor.continue();
-      } else {
-        console.log('No more entries in IndexedDB.');
-      }
+      store.openCursor().onsuccess = function (event) {
+        const cursor = event.target.result;
+        if (cursor) {
+          console.log(`Data type: ${cursor.key}`, cursor.value.data);
+          cursor.continue();
+        } else {
+          console.log('No more entries in IndexedDB.');
+          resolve();
+        }
+      };
     };
-  };
+
+    dbRequest.onerror = function (event) {
+      console.error('Error reading IndexedDB:', event.target.errorCode);
+      reject();
+    };
+  });
 }

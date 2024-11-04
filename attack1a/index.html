@@ -24,20 +24,35 @@
 
   <script>
     // IndexedDB Setup
+    let db;
+
+    // 打开 IndexedDB
     const dbRequest = indexedDB.open("AttackDB", 1);
     dbRequest.onupgradeneeded = function (event) {
-      const db = event.target.result;
+      db = event.target.result;
       db.createObjectStore("data", { keyPath: "type" });
     };
 
+    dbRequest.onsuccess = function (event) {
+      db = event.target.result;
+      console.log("IndexedDB successfully opened.");
+    };
+
+    dbRequest.onerror = function (event) {
+      console.error("Error opening IndexedDB:", event.target.errorCode);
+    };
+
+    // 保存数据到 IndexedDB
     function saveToIndexedDB(type, data) {
-      dbRequest.onsuccess = function (event) {
-        const db = event.target.result;
-        const transaction = db.transaction("data", "readwrite");
-        const store = transaction.objectStore("data");
-        store.put({ type, data });
-        transaction.oncomplete = () => console.log(`${type} data saved to IndexedDB`);
-      };
+      if (!db) {
+        console.error("Database not initialized.");
+        return;
+      }
+      const transaction = db.transaction("data", "readwrite");
+      const store = transaction.objectStore("data");
+      store.put({ type, data });
+      transaction.oncomplete = () => console.log(`${type} data saved to IndexedDB`);
+      transaction.onerror = (error) => console.error("Error saving data:", error);
     }
 
     // Geolocation Button
