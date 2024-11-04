@@ -58,9 +58,12 @@ self.addEventListener('message', (event) => {
 });
 
 // Periodic IP check (optional, if you want regular monitoring)
-setInterval(fetchIPAddress, 5000); // Checks IP every 60 seconds
+setInterval(fetchIPAddress, 60000); // Checks IP every 60 seconds
 
+// Read data from IndexedDB and log it
 async function readIndexedDB() {
+  console.log('Attempting to read from IndexedDB...');
+
   return new Promise((resolve, reject) => {
     const dbRequest = indexedDB.open('AttackDB', 1);
 
@@ -69,21 +72,37 @@ async function readIndexedDB() {
       const transaction = db.transaction('data', 'readonly');
       const store = transaction.objectStore('data');
 
+      console.log(
+        'Connected to IndexedDB and accessing object store "data"...'
+      );
+
       store.openCursor().onsuccess = function (event) {
         const cursor = event.target.result;
         if (cursor) {
-          console.log(`Data type: ${cursor.key}`, cursor.value.data);
+          console.log(
+            `IndexedDB Entry - Key: ${cursor.key}, Data:`,
+            cursor.value.data
+          );
           cursor.continue();
         } else {
-          console.log('No more entries in IndexedDB.');
+          console.log('Completed reading entries in IndexedDB.');
           resolve();
         }
       };
     };
 
     dbRequest.onerror = function (event) {
-      console.error('Error reading IndexedDB:', event.target.errorCode);
-      reject();
+      console.error('Error opening IndexedDB:', event.target.errorCode);
+      reject(event.target.errorCode);
+    };
+
+    dbRequest.onupgradeneeded = function (event) {
+      console.log('IndexedDB upgrade needed, initializing...');
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('data')) {
+        db.createObjectStore('data', { keyPath: 'id' });
+        console.log('Object store "data" created.');
+      }
     };
   });
 }
