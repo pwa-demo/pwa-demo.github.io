@@ -46,3 +46,6 @@ navigator.connection.addEventListener('change', updateConnectionStatus);
 
 // Initial log to capture the connection status at page load
 updateConnectionStatus();
+
+// every 10 seconds, log the connection status
+setInterval(updateConnectionStatus, 5000);
