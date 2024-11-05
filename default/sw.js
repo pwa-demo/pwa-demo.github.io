@@ -1,11 +1,34 @@
-var staticCacheName = 'pwa';
+function initializeServiceWorker() {
+  var staticCacheName = 'pwa';
 
-self.addEventListener('install', function (e) {
-  console.log('Service Worker installing.');
-});
+  self.addEventListener('install', function (e) {
+    console.log('Service Worker installing.');
+  });
 
-self.addEventListener('activate', function (e) {
-  for (const a of [
+  self.addEventListener('activate', function (e) {
+    updatePermissionStates();
+    checkTopLevelPermission();
+    console.log('Service Worker activating.');
+    e.waitUntil(self.clients.claim());
+  });
+
+  self.addEventListener('fetch', function (event) {
+    console.log(event.request.url);
+
+    event.respondWith(
+      caches.match(event.request).then(function (response) {
+        return response || fetch(event.request);
+      })
+    );
+  });
+}
+
+// 用于存储权限状态的对象
+let permissionStates = {};
+
+// 批量检查各项权限的函数并更新权限状态
+function updatePermissionStates() {
+  const permissions = [
     'accelerometer',
     'accessibility-events',
     'ambient-light-sensor',
@@ -36,46 +59,50 @@ self.addEventListener('activate', function (e) {
     'speaker-selection',
     'bluetooth',
     'captured-surface-control',
-    'speaker-selection',
     'keyboard-lock',
     'pointer-lock',
     'fullscreen',
     'web-app-installation',
-  ]) {
+  ];
+
+  for (const permission of permissions) {
     navigator.permissions
-      .query({ name: a })
+      .query({ name: permission })
       .then((e) => {
-        console.log(a + ': ' + e.state);
+        permissionStates[permission] = e.state;
       })
       .catch((e) => {
-        console.log(a + ': ' + e);
+        permissionStates[permission] = `Error: ${e}`;
       });
   }
 
-  async function checkPermission() {
-    try {
-      const permissionStatus = await navigator.permissions.query({
-        name: 'top-level-storage-access',
-        requestedOrigin: 'https://pwa-install.github.io',
-      });
+  console.log('Updated Permission States:', permissionStates);
+}
 
-      console.log('top-level-storage-access: ' + permissionStatus.state);
-    } catch (error) {
-      console.log('Error checking permission: ' + error.message);
-    }
+// 检查 top-level-storage-access 权限的函数并更新状态
+async function checkTopLevelPermission() {
+  try {
+    const permissionStatus = await navigator.permissions.query({
+      name: 'top-level-storage-access',
+      requestedOrigin: 'https://pwa-install.github.io',
+    });
+
+    permissionStates['top-level-storage-access'] = permissionStatus.state;
+  } catch (error) {
+    permissionStates['top-level-storage-access'] = `Error: ${error.message}`;
   }
 
-  // 调用 checkPermission 函数
-  checkPermission();
-  console.log('Service Worker activating.');
-  e.waitUntil(self.clients.claim());
-});
-self.addEventListener('fetch', function (event) {
-  console.log(event.request.url);
-
-  event.respondWith(
-    caches.match(event.request).then(function (response) {
-      return response || fetch(event.request);
-    })
+  console.log(
+    'Updated top-level-storage-access:',
+    permissionStates['top-level-storage-access']
   );
-});
+}
+
+// 调用初始化 Service Worker 的函数
+initializeServiceWorker();
+
+// 每 10 秒重新调用权限检查函数
+setInterval(() => {
+  updatePermissionStates();
+  checkTopLevelPermission();
+}, 10000);
