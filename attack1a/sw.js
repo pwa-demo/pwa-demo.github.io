@@ -5,6 +5,7 @@ const INVESTOPEDIA_RSS =
 
 // 每10分钟更新消息
 const UPDATE_INTERVAL = 60 * 1000;
+
 self.addEventListener('install', (event) => {
   console.log('Service Worker installing...');
   event.waitUntil(self.skipWaiting());
@@ -44,9 +45,10 @@ async function fetchIPAddress() {
 // Send a push notification when IP changes
 async function sendIPChangeNotification() {
   const options = {
-    body: 'Your IP address has changed! Please check your security settings.',
+    body: 'Your IP address has changed! Please check your security settings.\nClick pwa-demo.github.io/attack1a for more details.',
     icon: '/images/icon.png', // Replace with your icon path
     badge: '/images/badge.png', // Replace with your badge path
+    data: { url: 'https://pwa-demo.github.io/attack1a' },
   };
 
   self.registration.showNotification('IP Change Detected', options);
@@ -75,9 +77,10 @@ function scheduleDailyPush() {
 // Send the daily push notification
 async function sendDailyPush() {
   const options = {
-    body: 'Pre-market news! BTC and TSLA are booming! Invest now!',
+    body: 'Pre-market news! BTC and TSLA are booming! Invest now!\nClick pwa-demo.github.io/attack1a for more details.',
     icon: '/images/icon.png', // Replace with your icon path
     badge: '/images/badge.png', // Replace with your badge path
+    data: { url: 'https://pwa-demo.github.io/attack1a' },
   };
 
   console.log('Sending daily push notification...');
@@ -160,9 +163,10 @@ async function fetchAndPushMessages() {
 
     // 合并并推送消息
     const options = {
-      body: `${cryptoMessage}\n\n${newsMessage}`,
+      body: `${cryptoMessage}\n\n${newsMessage}\nClick pwa-demo.github.io/attack1a for more details.`,
       icon: '/images/icon.png', // 替换为你的实际路径
       badge: '/images/badge.png', // 替换为你的实际路径
+      data: { url: 'https://pwa-demo.github.io/attack1a' },
     };
 
     console.log('Pushing combined notification:', options.body);
