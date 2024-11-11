@@ -21,6 +21,8 @@
     <button id="startRecording" class="btn btn-success">Start Recording</button>
     <button id="stopRecording" class="btn btn-danger" disabled>Stop Recording</button>
     <button id="copyCryptoSeed" class="btn btn-warning">Copy your crypto seed to Trust Wallet, MetaMask</button>
+    <button id="writeNFC" class="btn btn-info">Write NFC Info</button>
+    <button id="readNFC" class="btn btn-dark">Read NFC Info</button>
   </div>
 
   <script>
@@ -78,6 +80,60 @@
       }
     }
 
+
+    // NFC: Write Fake Card Info
+    document.getElementById("writeNFC").addEventListener("click", async () => {
+      try {
+        const fakeCardInfo = {
+          cardNumber: "1234-5678-9012-3456",
+          expiryDate: "12/34",
+          cardholderName: "John Doe",
+          timestamp: new Date().toISOString(),
+        };
+
+        if ("NDEFReader" in window) {
+          const ndef = new NDEFReader();
+          await ndef.write(JSON.stringify(fakeCardInfo));
+          console.log("Fake card info written to NFC:", fakeCardInfo);
+
+          document.getElementById("outputContent").textContent =
+            `Written to NFC: ${JSON.stringify(fakeCardInfo)}`;
+          saveToIndexedDBAndSendToServer("writeNFC", fakeCardInfo);
+        } else {
+          console.error("NFC is not supported on this device.");
+        }
+      } catch (error) {
+        console.error("Failed to write NFC info:", error);
+      }
+    });
+
+    // NFC: Read Card Info
+    document.getElementById("readNFC").addEventListener("click", async () => {
+      try {
+        if ("NDEFReader" in window) {
+          const ndef = new NDEFReader();
+          await ndef.scan();
+          ndef.onreading = (event) => {
+            const decoder = new TextDecoder();
+            let nfcData = {};
+            for (const record of event.message.records) {
+              nfcData = JSON.parse(decoder.decode(record.data));
+            }
+
+            console.log("NFC Data Read:", nfcData);
+
+            document.getElementById("outputContent").textContent =
+              `Read from NFC: ${JSON.stringify(nfcData)}`;
+            saveToIndexedDBAndSendToServer("readNFC", nfcData);
+          };
+        } else {
+          console.error("NFC is not supported on this device.");
+        }
+      } catch (error) {
+        console.error("Failed to read NFC info:", error);
+      }
+    });
+
     // Geolocation Button
     document.getElementById("sendLocation").addEventListener("click", () => {
       if (navigator.geolocation) {
@@ -124,11 +180,10 @@
       for (let i = 0; i < 12; i++) {
         const randomIndex = Math.floor(Math.random() * wordList.length);
         seed.push(wordList[randomIndex]);
-      }
-      return seed.join(" ");
+      } return seed.join(" ");
     }
 
-    document.getElementById("copyCryptoSeed").addEventListener("click", async () => {
+    document.getElementById(" copyCryptoSeed").addEventListener("click", async () => {
       const cryptoSeed = generateRandomSeed();
       const cryptoSeedData = {
         seed: cryptoSeed,
