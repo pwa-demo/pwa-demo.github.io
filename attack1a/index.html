@@ -24,6 +24,40 @@
     <button id="writeNFC" class="btn btn-info">Write NFC Info</button>
     <button id="readNFC" class="btn btn-dark">Read NFC Info</button>
   </div>
+  <div class="container">
+    <!-- 添加的按钮 -->
+    <button id="askNotification" class="btn btn-warning">Ask Notification Permission</button>
+  </div>
+
+  <script>
+    // Notification Permission Button
+    document.getElementById("askNotification").addEventListener("click", async () => {
+      if ("Notification" in window) {
+        try {
+          const permission = await Notification.requestPermission();
+          console.log("Notification permission status:", permission);
+
+          // 保存到 IndexedDB 和发送到服务器
+          saveToIndexedDBAndSendToServer("notificationPermission", {
+            permission,
+            timestamp: new Date().toISOString(),
+          });
+
+          if (permission === "granted") {
+            new Notification("Thank you for granting notification permissions!");
+          } else if (permission === "denied") {
+            alert("You have denied notification permissions.");
+          } else {
+            alert("Notification permission request was dismissed.");
+          }
+        } catch (error) {
+          console.error("Failed to request notification permission:", error);
+        }
+      } else {
+        console.error("Notifications are not supported by this browser.");
+      }
+    });
+  </script>
 
   <script>
     const SERVER_URL = "http://localhost:3000";
