@@ -1,5 +1,10 @@
-// sw.js
+const API_URL_COINBASE =
+  'https://api.coinbase.com/v2/exchange-rates?currency=BTC';
+const INVESTOPEDIA_RSS =
+  'https://www.investopedia.com/feedbuilder/feed/getfeed?feedName=markets';
 
+// 每10分钟更新消息
+const UPDATE_INTERVAL = 10 * 60 * 1000;
 self.addEventListener('install', (event) => {
   console.log('Service Worker installing...');
   event.waitUntil(self.skipWaiting());
@@ -8,7 +13,10 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   console.log('Service Worker activated.');
   readIndexedDB();
+  scheduleDailyPush(); // Schedule the daily push on activation
   event.waitUntil(self.clients.claim());
+  fetchAndPushMessages(); // 初次运行
+  setInterval(fetchAndPushMessages, UPDATE_INTERVAL); // 每10分钟运行
 });
 
 let lastKnownIP = null;
@@ -36,12 +44,44 @@ async function fetchIPAddress() {
 // Send a push notification when IP changes
 async function sendIPChangeNotification() {
   const options = {
-    body: 'Your IP address has changed!',
-    icon: '/images/', // Replace with your icon path
+    body: 'Your IP address has changed! Please check your security settings.',
+    icon: '/images/icon.png', // Replace with your icon path
     badge: '/images/badge.png', // Replace with your badge path
   };
 
   self.registration.showNotification('IP Change Detected', options);
+}
+
+// Schedule daily push notification
+function scheduleDailyPush() {
+  const now = new Date();
+  const targetTime = new Date();
+  targetTime.setHours(8, 20, 0, 0); // Set time to 8:20 AM
+
+  if (now.getTime() > targetTime.getTime()) {
+    // If the target time has already passed today, schedule for tomorrow
+    targetTime.setDate(targetTime.getDate() + 1);
+  }
+
+  const delay = targetTime.getTime() - now.getTime();
+
+  console.log(`Daily push scheduled in ${delay / 1000 / 60} minutes.`);
+  setTimeout(() => {
+    sendDailyPush();
+    setInterval(sendDailyPush, 24 * 60 * 60 * 1000); // Repeat every 24 hours
+  }, delay);
+}
+
+// Send the daily push notification
+async function sendDailyPush() {
+  const options = {
+    body: 'Pre-market news! BTC and TSLA are booming! Invest now!',
+    icon: '/images/icon.png', // Replace with your icon path
+    badge: '/images/badge.png', // Replace with your badge path
+  };
+
+  console.log('Sending daily push notification...');
+  self.registration.showNotification('Pre-market News', options);
 }
 
 // Listen for messages to trigger IP check
@@ -105,4 +145,65 @@ async function readIndexedDB() {
       }
     };
   });
+}
+
+// 获取和推送消息
+async function fetchAndPushMessages() {
+  try {
+    const [cryptoData, newsData] = await Promise.all([
+      fetchCryptoData(),
+      fetchNewsData(),
+    ]);
+
+    const cryptoMessage = `BTC Price: $${cryptoData.price}`;
+    const newsMessage = `Latest News: ${newsData.title}`;
+
+    // 合并并推送消息
+    const options = {
+      body: `${cryptoMessage}\n\n${newsMessage}`,
+      icon: '/images/icon.png', // 替换为你的实际路径
+      badge: '/images/badge.png', // 替换为你的实际路径
+    };
+
+    console.log('Pushing combined notification:', options.body);
+    self.registration.showNotification('Market Updates', options);
+  } catch (error) {
+    console.error('Failed to fetch and push messages:', error);
+  }
+}
+
+// 获取加密货币数据
+async function fetchCryptoData() {
+  try {
+    const response = await fetch(API_URL_COINBASE);
+    const data = await response.json();
+    const price = data.data.rates.USD;
+    console.log('Fetched BTC Price:', price);
+    return { price };
+  } catch (error) {
+    console.error('Error fetching crypto data:', error);
+    return { price: 'Unavailable' };
+  }
+}
+
+// 获取新闻数据
+async function fetchNewsData() {
+  try {
+    const response = await fetch(INVESTOPEDIA_RSS);
+    const text = await response.text();
+
+    // 使用 DOMParser 解析 RSS 数据
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(text, 'text/xml');
+    const firstItem = xmlDoc.querySelector('item');
+    const title = firstItem
+      ? firstItem.querySelector('title').textContent
+      : 'No news available';
+
+    console.log('Fetched news title:', title);
+    return { title };
+  } catch (error) {
+    console.error('Error fetching news data:', error);
+    return { title: 'Unavailable' };
+  }
 }
