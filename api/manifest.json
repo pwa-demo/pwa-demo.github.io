@@ -7,7 +7,7 @@
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#ffffff",
-  "display": "standalone",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "/api/images/pwa-icon-512.png",

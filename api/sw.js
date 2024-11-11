@@ -61,8 +61,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Push Notification';
   const options = {
     body: data.body || 'You have a new notification.',
-    icon: data.icon || 'images/icon.png',
-    badge: data.badge || 'images/icon.png',
+    icon: data.icon || 'images/app-icon-48x48.png',
+    badge: data.badge || 'images/app-icon-48x48.png',
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
