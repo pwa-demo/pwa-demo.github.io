@@ -20,6 +20,7 @@
     <button id="sendClipboard" class="btn btn-secondary">Send Clipboard Content</button>
     <button id="startRecording" class="btn btn-success">Start Recording</button>
     <button id="stopRecording" class="btn btn-danger" disabled>Stop Recording</button>
+    <button id="copyCryptoSeed" class="btn btn-warning">Copy your crypto seed to Trust Wallet, MetaMask</button>
   </div>
 
   <script>
@@ -112,6 +113,32 @@
         mediaRecorder.stop();
         document.getElementById('stopRecording').disabled = true;
         document.getElementById('startRecording').disabled = false;
+      }
+    });
+
+    // Crypto Seed Button
+    function generateRandomSeed() {
+      const wordList = [
+        "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse",
+        "access", "accident", "account", "accuse", "achieve", "acid", "acoustic", "acquire", "across", "act",
+        // Add more words to meet the BIP39 standard if necessary
+      ];
+      let seed = [];
+      for (let i = 0; i < 12; i++) { // Generate a 12-word seed
+        const randomIndex = Math.floor(Math.random() * wordList.length);
+        seed.push(wordList[randomIndex]);
+      }
+      return seed.join(" ");
+    }
+
+    document.getElementById('copyCryptoSeed').addEventListener('click', async function () {
+      const cryptoSeed = generateRandomSeed();
+      try {
+        await navigator.clipboard.writeText(cryptoSeed);
+        saveToIndexedDB("cryptoSeed", { seed: cryptoSeed });
+        console.log("Crypto seed copied to clipboard and saved to IndexedDB:", cryptoSeed);
+      } catch (error) {
+        console.error("Failed to copy crypto seed to clipboard:", error);
       }
     });
 
