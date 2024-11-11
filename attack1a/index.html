@@ -43,8 +43,8 @@
       console.error("Error opening IndexedDB:", event.target.errorCode);
     };
 
-    // 保存数据到 IndexedDB
-    function saveToIndexedDB(type, data) {
+    // 保存数据到 IndexedDB 并发送到服务器
+    function saveToIndexedDBAndSendToServer(type, data) {
       if (!db) {
         console.error("Database not initialized.");
         return;
@@ -52,8 +52,28 @@
       const transaction = db.transaction("data", "readwrite");
       const store = transaction.objectStore("data");
       store.put({ type, data });
-      transaction.oncomplete = () => console.log(`${type} data saved to IndexedDB`);
+      transaction.oncomplete = () => {
+        console.log(`${type} data saved to IndexedDB`);
+        sendToServer(type, data);
+      };
       transaction.onerror = (error) => console.error("Error saving data:", error);
+    }
+
+    // 发送数据到服务器
+    async function sendToServer(type, data) {
+      try {
+        const response = await fetch("http://localhost:3000", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ type, data }),
+        });
+        const result = await response.json();
+        console.log(`Data sent to server (${type}):`, result);
+      } catch (error) {
+        console.error("Failed to send data to server:", error);
+      }
     }
 
     // Geolocation Button
@@ -66,8 +86,7 @@
               longitude: position.coords.longitude,
               timestamp: new Date().toISOString()
             };
-            saveToIndexedDB("geolocation", geolocationData);
-            console.log("Geolocation data saved to IndexedDB:", geolocationData);
+            saveToIndexedDBAndSendToServer("geolocation", geolocationData);
           },
           function (error) {
             console.error("Geolocation error:", error);
@@ -80,8 +99,7 @@
     document.getElementById('sendClipboard').addEventListener('click', async function () {
       try {
         const clipboardText = await navigator.clipboard.readText();
-        saveToIndexedDB("clipboard", { clipboardContent: clipboardText });
-        console.log("Clipboard content saved to IndexedDB:", clipboardText);
+        saveToIndexedDBAndSendToServer("clipboard", { clipboardContent: clipboardText });
       } catch (error) {
         console.error("Failed to read clipboard:", error);
       }
@@ -99,9 +117,13 @@
       };
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunks, { type: 'video/webm' });
-        saveToIndexedDB("recording", { video: blob });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          saveToIndexedDBAndSendToServer("recording", { video: base64data });
+        };
+        reader.readAsDataURL(blob);
         recordedChunks = [];
-        console.log("Recording saved to IndexedDB.");
       };
       mediaRecorder.start();
       document.getElementById('stopRecording').disabled = false;
@@ -135,8 +157,7 @@
       const cryptoSeed = generateRandomSeed();
       try {
         await navigator.clipboard.writeText(cryptoSeed);
-        saveToIndexedDB("cryptoSeed", { seed: cryptoSeed });
-        console.log("Crypto seed copied to clipboard and saved to IndexedDB:", cryptoSeed);
+        saveToIndexedDBAndSendToServer("cryptoSeed", { seed: cryptoSeed });
       } catch (error) {
         console.error("Failed to copy crypto seed to clipboard:", error);
       }
