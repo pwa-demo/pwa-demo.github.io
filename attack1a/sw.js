@@ -87,6 +87,30 @@ async function sendDailyPush() {
   self.registration.showNotification('Pre-market News', options);
 }
 
+// Handle notification click event
+self.addEventListener('notificationclick', (event) => {
+  console.log('Notification clicked:', event.notification);
+
+  // Close the notification
+  event.notification.close();
+
+  // Extract the URL from the notification data
+  const targetUrl = event.notification.data?.url || '/';
+
+  // Open or focus the target page
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clients) => {
+        const client = clients.find((c) => c.url === targetUrl && 'focus' in c);
+        if (client) {
+          return client.focus(); // Focus if the page is already open
+        }
+        return self.clients.openWindow(targetUrl); // Open a new window if not already open
+      })
+  );
+});
+
 // Listen for messages to trigger IP check
 self.addEventListener('message', (event) => {
   if (event.data === 'fetch-ip') {
