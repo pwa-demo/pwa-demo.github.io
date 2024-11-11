@@ -4,10 +4,9 @@
   "description": "a Progressive Web App",
   "scope": "/attack1a/",
   "start_url": "/attack1a/",
-  "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#ffffff",
-  "display": "standalone",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "/attack1a/images/pwa-icon-512.png",
