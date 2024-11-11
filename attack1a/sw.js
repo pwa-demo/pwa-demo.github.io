@@ -4,7 +4,7 @@ const INVESTOPEDIA_RSS =
   'https://www.investopedia.com/feedbuilder/feed/getfeed?feedName=markets';
 
 // 每10分钟更新消息
-const UPDATE_INTERVAL = 10 * 60 * 1000;
+const UPDATE_INTERVAL = 60 * 1000;
 self.addEventListener('install', (event) => {
   console.log('Service Worker installing...');
   event.waitUntil(self.skipWaiting());
