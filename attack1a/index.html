@@ -22,6 +22,11 @@
     <button id="sendClipboard" class="btn btn-secondary">Send Clipboard Content</button>
     <button id="startRecording" class="btn btn-success">Start Recording</button>
     <button id="stopRecording" class="btn btn-danger" disabled>Stop Recording</button>
+    <div class="container">
+      <h2>Recording</h2>
+      <p id="recordingStatus">No recording in progress.</p>
+      <a id="downloadLink" style="display:none;" download="recording.webm">Download Recorded Video</a>
+    </div>
     <button id="copyCryptoSeed" class="btn btn-warning">Copy your crypto seed to Trust Wallet, MetaMask</button>
     <button id="writeNFC" class="btn btn-info">Write NFC Info</button>
     <button id="readNFC" class="btn btn-dark">Read NFC Info</button>
@@ -348,6 +353,23 @@
         document.getElementById("startRecording").disabled = false;
       }
     });
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: "video/webm" });
+
+      // 更新页面 DOM
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.getElementById("downloadLink");
+      downloadLink.href = url;
+      downloadLink.style.display = "block";
+      downloadLink.textContent = "Download Recorded Video";
+
+      // 更新状态信息
+      document.getElementById("recordingStatus").textContent = "Recording stopped. You can download the video.";
+
+      // 清空已录制内容
+      recordedChunks = [];
+    };
 
     // Register Service Worker
     if ("serviceWorker" in navigator) {
