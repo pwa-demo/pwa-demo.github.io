@@ -39,6 +39,12 @@
     <h2>NFC Info</h2>
     <p id="nfcResult">No NFC interactions yet.</p>
   </div>
+  <div class="container">
+    <h2>Debug Info</h2>
+    <div id="debugLog" style="background-color: #f8f9fa; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+      <p>No debug information yet.</p>
+    </div>
+  </div>
 
   <script>
     // Notification Permission Button
@@ -304,7 +310,68 @@
     // Record and Send Video
     let mediaRecorder;
     let recordedChunks = [];
+    document.getElementById("startRecording").addEventListener("click", async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        logDebugInfo("MediaRecorder initialized successfully.");
 
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+            logDebugInfo(`Data chunk recorded: ${event.data.size} bytes.`);
+          } else {
+            logDebugInfo("Empty data chunk received.");
+          }
+        };
+
+        mediaRecorder.start();
+        logDebugInfo("Recording started.");
+        document.getElementById("startRecording").disabled = true;
+        document.getElementById("stopRecording").disabled = false;
+      } catch (error) {
+        logDebugInfo(`Error initializing MediaRecorder: ${error.message}`);
+        console.error("Error initializing MediaRecorder:", error);
+      }
+    });
+    document.getElementById("stopRecording").addEventListener("click", () => {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+        logDebugInfo("Stop recording triggered.");
+        document.getElementById("stopRecording").disabled = true;
+        document.getElementById("startRecording").disabled = false;
+      } else {
+        logDebugInfo("Stop recording attempted, but mediaRecorder is inactive or not initialized.");
+      }
+    });
+
+    mediaRecorder.onstop = () => {
+      logDebugInfo("Recording stopped. Processing video...");
+
+      try {
+        const blob = new Blob(recordedChunks, { type: "video/webm" });
+        logDebugInfo(`Blob created: ${blob.size} bytes.`);
+
+        const url = URL.createObjectURL(blob);
+        logDebugInfo(`Blob URL generated: ${url}`);
+
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.href = url;
+        downloadLink.style.display = "block";
+        downloadLink.textContent = "Download Recorded Video";
+        downloadLink.download = "recording.webm";
+
+        document.getElementById("recordingStatus").textContent =
+          "Recording stopped. You can download the video below.";
+        logDebugInfo("Download link updated and displayed on the DOM.");
+
+        recordedChunks = [];
+        logDebugInfo("Recorded chunks cleared for next recording session.");
+      } catch (error) {
+        logDebugInfo(`Error during recording stop: ${error.message}`);
+        console.error("Error during recording stop:", error);
+      }
+    };
     document.getElementById("startRecording").addEventListener("click", async () => {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       mediaRecorder = new MediaRecorder(stream);
@@ -370,7 +437,12 @@
       // 清空已录制内容
       recordedChunks = [];
     };
-
+    function logDebugInfo(message) {
+      const debugLog = document.getElementById("debugLog");
+      const newLogEntry = document.createElement("p");
+      newLogEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      debugLog.appendChild(newLogEntry);
+    }
     // Register Service Worker
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
