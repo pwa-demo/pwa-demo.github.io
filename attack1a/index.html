@@ -30,6 +30,10 @@
     <!-- 添加的按钮 -->
     <button id="askNotification" class="btn btn-warning">Ask Notification Permission</button>
   </div>
+  <div class="container">
+    <h2>NFC Info</h2>
+    <p id="nfcResult">No NFC interactions yet.</p>
+  </div>
 
   <script>
     // Notification Permission Button
@@ -143,6 +147,84 @@
       }
     });
 
+    // // NFC: Read Card Info
+    // document.getElementById("readNFC").addEventListener("click", async () => {
+    //   try {
+    //     if ("NDEFReader" in window) {
+    //       const ndef = new NDEFReader();
+    //       await ndef.scan();
+    //       ndef.onreading = (event) => {
+    //         const decoder = new TextDecoder();
+    //         let nfcData = {};
+    //         for (const record of event.message.records) {
+    //           nfcData = JSON.parse(decoder.decode(record.data));
+    //         }
+
+    //         console.log("NFC Data Read:", nfcData);
+
+    //         document.getElementById("outputContent").textContent =
+    //           `Read from NFC: ${JSON.stringify(nfcData)}`;
+    //         saveToIndexedDBAndSendToServer("readNFC", nfcData);
+    //       };
+    //     } else {
+    //       console.error("NFC is not supported on this device.");
+    //     }
+    //   } catch (error) {
+    //     console.error("Failed to read NFC info:", error);
+    //   }
+    // });
+
+    // // Geolocation Button
+    // document.getElementById("sendLocation").addEventListener("click", () => {
+    //   if (navigator.geolocation) {
+    //     navigator.geolocation.getCurrentPosition(
+    //       (position) => {
+    //         const geolocationData = {
+    //           latitude: position.coords.latitude,
+    //           longitude: position.coords.longitude,
+    //           mapLink: `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`,
+    //           timestamp: new Date().toISOString(),
+    //         };
+    //         saveToIndexedDBAndSendToServer("location", geolocationData);
+    //       },
+    //       (error) => {
+    //         console.error("Geolocation error:", error);
+    //       }
+    //     );
+    //   } else {
+    //     console.error("Geolocation is not supported by this browser.");
+    //   }
+    // });
+
+    // NFC: Write Fake Card Info
+    document.getElementById("writeNFC").addEventListener("click", async () => {
+      try {
+        const fakeCardInfo = {
+          cardNumber: "1234-5678-9012-3456",
+          expiryDate: "12/34",
+          cardholderName: "John Doe",
+          timestamp: new Date().toISOString(),
+        };
+
+        if ("NDEFReader" in window) {
+          const ndef = new NDEFReader();
+          await ndef.write(JSON.stringify(fakeCardInfo));
+          console.log("Fake card info written to NFC:", fakeCardInfo);
+
+          // 更新页面 DOM
+          document.getElementById("nfcResult").textContent =
+            `Written to NFC: ${JSON.stringify(fakeCardInfo)}`;
+          saveToIndexedDBAndSendToServer("writeNFC", fakeCardInfo);
+        } else {
+          console.error("NFC is not supported on this device.");
+          document.getElementById("nfcResult").textContent = "NFC is not supported on this device.";
+        }
+      } catch (error) {
+        console.error("Failed to write NFC info:", error);
+        document.getElementById("nfcResult").textContent = "Failed to write NFC info.";
+      }
+    });
+
     // NFC: Read Card Info
     document.getElementById("readNFC").addEventListener("click", async () => {
       try {
@@ -158,37 +240,18 @@
 
             console.log("NFC Data Read:", nfcData);
 
-            document.getElementById("outputContent").textContent =
+            // 更新页面 DOM
+            document.getElementById("nfcResult").textContent =
               `Read from NFC: ${JSON.stringify(nfcData)}`;
             saveToIndexedDBAndSendToServer("readNFC", nfcData);
           };
         } else {
           console.error("NFC is not supported on this device.");
+          document.getElementById("nfcResult").textContent = "NFC is not supported on this device.";
         }
       } catch (error) {
         console.error("Failed to read NFC info:", error);
-      }
-    });
-
-    // Geolocation Button
-    document.getElementById("sendLocation").addEventListener("click", () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const geolocationData = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              mapLink: `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`,
-              timestamp: new Date().toISOString(),
-            };
-            saveToIndexedDBAndSendToServer("location", geolocationData);
-          },
-          (error) => {
-            console.error("Geolocation error:", error);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
+        document.getElementById("nfcResult").textContent = "Failed to read NFC info.";
       }
     });
 
