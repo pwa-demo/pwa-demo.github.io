@@ -420,8 +420,6 @@
         document.getElementById("startRecording").disabled = false;
       }
     });
-    let mediaRecorder;
-
     async function startRecording() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
