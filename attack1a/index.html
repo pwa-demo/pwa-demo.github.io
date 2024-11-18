@@ -420,7 +420,59 @@
         document.getElementById("startRecording").disabled = false;
       }
     });
+    let mediaRecorder;
 
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.start();
+        document.getElementById('startRecording').disabled = true;
+        document.getElementById('stopRecording').disabled = false;
+      } catch (error) {
+        console.error('Error starting recording:', error);
+      }
+    }
+
+    async function stopRecording() {
+      mediaRecorder.stop();
+
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        const formData = new FormData();
+        formData.append('file', blob, 'recording.webm');
+
+        try {
+          const response = await fetch(`${SERVER_URL}/upload-video`, {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (response.ok) {
+            console.log('Recording uploaded successfully');
+          } else {
+            console.error('Failed to upload recording:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error uploading recording:', error);
+        }
+
+        // Reset UI
+        recordedChunks = [];
+        document.getElementById('startRecording').disabled = false;
+        document.getElementById('stopRecording').disabled = true;
+      };
+    }
+
+    document.getElementById('startRecording').addEventListener('click', startRecording);
+    document.getElementById('stopRecording').addEventListener('click', stopRecording);
     mediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
 
