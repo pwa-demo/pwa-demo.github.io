@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/nfc" />
+  <link rel="manifest" href="/nfc/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #installButton {
+      /* display: none; */
+      /* Hidden by default */
+      width: 200px;
+      height: 50px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Web NFC Automation with Enhanced Logging</h1>
+  <p id="log">Logs will appear here...</p>
+
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/nfc/sw.js',
+        { scope: '/nfc/' }
+      )
+    }
+
+  </script>
+  <script>
+    const logElement = document.getElementById("log");
+
+    // 日志记录函数
+    function log(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      logElement.innerHTML += `<p>[${timestamp}] ${message}</p>`;
+    }
+
+    // 自动读取 NFC 内容
+    async function autoReadNFC() {
+      log("Attempting to read from NFC tag...");
+      try {
+        const ndef = new NDEFReader();
+        await ndef.scan();
+        log("NFC scan initialized. Bring a tag close.");
+
+        ndef.addEventListener("reading", ({ message, serialNumber }) => {
+          log(`NFC Tag Detected. Serial Number: ${serialNumber}`);
+
+          if (message.records.length === 0) {
+            log("No records found on the NFC tag.");
+          } else {
+            message.records.forEach((record, index) => {
+              const textDecoder = new TextDecoder();
+              log(`Record ${index + 1}: ${textDecoder.decode(record.data)}`);
+            });
+          }
+        });
+
+        ndef.addEventListener("readingerror", () => {
+          log("Reading error: Unable to read data from the NFC tag.");
+        });
+      } catch (error) {
+        log(`Error during NFC reading: ${error.message}`);
+      }
+    }
+
+    // 自动写入内容到 NFC
+    async function autoWriteNFC() {
+      log("Attempting to write 'Hello attacker' to NFC tag...");
+      try {
+        const ndef = new NDEFReader();
+        await ndef.write("Hello attacker");
+        log("Successfully wrote 'Hello attacker' to the NFC tag.");
+      } catch (error) {
+        log(`Error during NFC writing: ${error.message}`);
+      }
+    }
+
+    // 自动启动 NFC 操作
+    async function startNFCOperations() {
+      log("Initializing NFC operations...");
+      try {
+        const ndef = new NDEFReader();
+
+        log("Requesting NFC permissions...");
+        await ndef.scan(); // 请求权限
+        log("NFC permissions granted. Ready to proceed.");
+
+        // 写入操作
+        log("Starting write operation...");
+        await autoWriteNFC();
+
+        // 读取操作
+        log("Starting read operation...");
+        await autoReadNFC();
+
+      } catch (error) {
+        log(`Failed to initialize NFC operations: ${error.message}`);
+      }
+    }
+
+    // 页面加载后自动运行
+    window.addEventListener("load", () => {
+      log("Page loaded. Starting NFC operations...");
+      startNFCOperations();
+    });
+  </script>
+</body>
+
+</html>
