@@ -37,11 +37,17 @@
       // Begin detection logic
       const accelerometer = await checkPermission('accelerometer');
       if (accelerometer === "no value") {
-        platformDetected = "iOS";
+        const midi = await checkPermission('midi');
+        if (midi === "no value") {
+          platformDetected = "iOS";
+        } else {
+          platformDetected = "Android Firefox";
+        }
+        return;
       } else {
         const paymentHandler = await checkPermission('payment-handler');
         if (paymentHandler === "no value") {
-          platformDetected = "Android Firefox";
+          platformDetected = "Firefox on Android";
         } else {
           const nfc = await checkPermission('nfc');
           const storageAccess = await checkPermission('storage-access');
