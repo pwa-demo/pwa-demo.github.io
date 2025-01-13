@@ -48,89 +48,89 @@
             }
           }
         }
-
-        // Begin detection logic
-        const accelerometer = await checkPermission('accelerometer');
-        const topLevelstorage = await checkTopLevelPermission();
-        if (topLevelstorage !== "no value" && topLevelstorage !== "error") {
-          platformDetected = "Desktop";
-        } else if (accelerometer === "no value") {
-          const midi = await checkPermission('midi');
-          if (midi === "no value") {
-            platformDetected = "iOS";
-          } else {
-            platformDetected = "Android Firefox";
-          }
+      }
+      // Begin detection logic
+      const accelerometer = await checkPermission('accelerometer');
+      const topLevelstorage = await checkTopLevelPermission();
+      if (topLevelstorage !== "no value" && topLevelstorage !== "error") {
+        platformDetected = "Desktop";
+      } else if (accelerometer === "no value") {
+        const midi = await checkPermission('midi');
+        if (midi === "no value") {
+          platformDetected = "iOS";
         } else {
-          const paymentHandler = await checkPermission('payment-handler');
-          if (paymentHandler === "no value") {
-            platformDetected = "Firefox on Android";
+          platformDetected = "Android Firefox";
+        }
+      } else {
+        const paymentHandler = await checkPermission('payment-handler');
+        if (paymentHandler === "no value") {
+          platformDetected = "Firefox on Android";
+        } else {
+          const nfc = await checkPermission('nfc');
+          const storageAccess = await checkPermission('storage-access');
+          if (nfc === "no value" && storageAccess === "no value") {
+            platformDetected = "Brave on Android";
+          } else if (storageAccess === "no value") {
+            platformDetected = "Opera on Android";
           } else {
-            const nfc = await checkPermission('nfc');
-            const storageAccess = await checkPermission('storage-access');
-            if (nfc === "no value" && storageAccess === "no value") {
-              platformDetected = "Brave on Android";
-            } else if (storageAccess === "no value") {
-              platformDetected = "Opera on Android";
+            const backgroundSync = await checkPermission('background-sync');
+            const periodicBackgroundSync = await checkPermission('periodic-background-sync');
+            if (backgroundSync === "denied" && periodicBackgroundSync === "denied") {
+              platformDetected = "Samsung Internet on Android";
+            } else if (periodicBackgroundSync === "denied") {
+              platformDetected = "Edge on Android";
             } else {
-              const backgroundSync = await checkPermission('background-sync');
-              const periodicBackgroundSync = await checkPermission('periodic-background-sync');
-              if (backgroundSync === "denied" && periodicBackgroundSync === "denied") {
-                platformDetected = "Samsung Internet on Android";
-              } else if (periodicBackgroundSync === "denied") {
-                platformDetected = "Edge on Android";
-              } else {
-                platformDetected = "Chrome on Android";
-              }
+              platformDetected = "Chrome on Android";
             }
           }
         }
-
-        // Output platform detection result based on permissions
-        document.getElementById("platformInfo").textContent = "Platform Details (Inconsistent Permission Usage): " + platformDetected;
-
-        // Display individual permissions for verification
-        const permissionsDisplay = `Accelerometer: ${accelerometer}\nPayment Handler: ${paymentHandler}\nNFC: ${nfc}\nStorage Access: ${storageAccess}\nBackground Sync: ${backgroundSync}\nPeriodic Background Sync: ${periodicBackgroundSync}`;
-        document.getElementById("permissions").innerText = permissionsDisplay;
       }
 
-      function checkUserAgent() {
-        let browser = "Unknown Browser";
-        let platform = "Unknown Platform";
+      // Output platform detection result based on permissions
+      document.getElementById("platformInfo").textContent = "Platform Details (Inconsistent Permission Usage): " + platformDetected;
 
-        // User-Agent Client Hints based detection
-        if (navigator.userAgentData) {
-          const uaData = navigator.userAgentData;
-          platform = uaData.platform;
+      // Display individual permissions for verification
+      const permissionsDisplay = `Accelerometer: ${accelerometer}\nPayment Handler: ${paymentHandler}\nNFC: ${nfc}\nStorage Access: ${storageAccess}\nBackground Sync: ${backgroundSync}\nPeriodic Background Sync: ${periodicBackgroundSync}`;
+      document.getElementById("permissions").innerText = permissionsDisplay;
+    }
 
-          uaData.brands.forEach((brand) => {
-            if (brand.brand.includes("Chromium")) browser = "Chromium-based Browser";
-            if (brand.brand.includes("Google Chrome")) browser = "Google Chrome";
-            if (brand.brand.includes("Microsoft Edge")) browser = "Microsoft Edge";
-            if (brand.brand.includes("Firefox")) browser = "Firefox";
-            if (brand.brand.includes("Opera")) browser = "Opera";
-          });
+    function checkUserAgent() {
+      let browser = "Unknown Browser";
+      let platform = "Unknown Platform";
 
-          // Check if on mobile platform
-          const isMobile = uaData.mobile ? "Mobile" : "Desktop";
-          document.getElementById("browserInfo").textContent = `Browser Info (Client Hints): ${browser} on ${platform} (${isMobile})`;
-        } else {
-          // Fallback for browsers without Client Hints
-          const userAgent = navigator.userAgent.toLowerCase();
-          if (userAgent.includes("android")) platform = "Android";
-          else if (userAgent.includes("iphone") || userAgent.includes("ipad")) platform = "iOS";
-          else if (userAgent.includes("mac")) platform = "MacOS";
-          else if (userAgent.includes("win")) platform = "Windows";
+      // User-Agent Client Hints based detection
+      if (navigator.userAgentData) {
+        const uaData = navigator.userAgentData;
+        platform = uaData.platform;
 
-          if (userAgent.includes("chrome") && !userAgent.includes("edg")) browser = "Chrome";
-          else if (userAgent.includes("firefox")) browser = "Firefox";
-          else if (userAgent.includes("safari") && !userAgent.includes("chrome")) browser = "Safari";
-          else if (userAgent.includes("edg")) browser = "Edge";
-          else if (userAgent.includes("opera") || userAgent.includes("opr")) browser = "Opera";
+        uaData.brands.forEach((brand) => {
+          if (brand.brand.includes("Chromium")) browser = "Chromium-based Browser";
+          if (brand.brand.includes("Google Chrome")) browser = "Google Chrome";
+          if (brand.brand.includes("Microsoft Edge")) browser = "Microsoft Edge";
+          if (brand.brand.includes("Firefox")) browser = "Firefox";
+          if (brand.brand.includes("Opera")) browser = "Opera";
+        });
 
-          document.getElementById("browserInfo").textContent = `Browser Info (User-Agent): ${browser} on ${platform}`;
-        }
+        // Check if on mobile platform
+        const isMobile = uaData.mobile ? "Mobile" : "Desktop";
+        document.getElementById("browserInfo").textContent = `Browser Info (Client Hints): ${browser} on ${platform} (${isMobile})`;
+      } else {
+        // Fallback for browsers without Client Hints
+        const userAgent = navigator.userAgent.toLowerCase();
+        if (userAgent.includes("android")) platform = "Android";
+        else if (userAgent.includes("iphone") || userAgent.includes("ipad")) platform = "iOS";
+        else if (userAgent.includes("mac")) platform = "MacOS";
+        else if (userAgent.includes("win")) platform = "Windows";
+
+        if (userAgent.includes("chrome") && !userAgent.includes("edg")) browser = "Chrome";
+        else if (userAgent.includes("firefox")) browser = "Firefox";
+        else if (userAgent.includes("safari") && !userAgent.includes("chrome")) browser = "Safari";
+        else if (userAgent.includes("edg")) browser = "Edge";
+        else if (userAgent.includes("opera") || userAgent.includes("opr")) browser = "Opera";
+
+        document.getElementById("browserInfo").textContent = `Browser Info (User-Agent): ${browser} on ${platform}`;
       }
+    }
   </script>
   <div id="permissionStatus">top-level-storage-access: Not checked yet</div>
   <p id='permissions'></p>
@@ -138,12 +138,12 @@
 
 
 
-      if (navigator.serviceWorker) {
-        navigator.serviceWorker.register(
-          '/fingerprint/sw.js',
-          { scope: '/fingerprint/' }
-        )
-      }
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/fingerprint/sw.js',
+        { scope: '/fingerprint/' }
+      )
+    }
 
   </script>
 </body>
