@@ -50,7 +50,7 @@
 
     // Accelerometer API
     try {
-      const accelerometer = new Accelerometer({ frequency: 50000 });
+      const accelerometer = new Accelerometer({ frequency: 500000000 });
       accelerometer.addEventListener('reading', () => {
         updateData('accelerometer-data', `Accelerometer Data: x=${accelerometer.x}, y=${accelerometer.y}, z=${accelerometer.z}`);
       });
@@ -64,7 +64,7 @@
 
     // Gyroscope API
     try {
-      const gyroscope = new Gyroscope({ frequency: 50000 });
+      const gyroscope = new Gyroscope({ frequency: 500000000 });
       gyroscope.addEventListener('reading', () => {
         updateData('gyroscope-data', `Gyroscope Data: x=${gyroscope.x}, y=${gyroscope.y}, z=${gyroscope.z}`);
       });
@@ -78,7 +78,7 @@
 
     // Magnetometer API
     try {
-      const magnetometer = new Magnetometer({ frequency: 50000 });
+      const magnetometer = new Magnetometer({ frequency: 500000000 });
       magnetometer.addEventListener('reading', () => {
         updateData('magnetometer-data', `Magnetometer Data: x=${magnetometer.x}, y=${magnetometer.y}, z=${magnetometer.z}`);
       });
