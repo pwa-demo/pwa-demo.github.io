@@ -35,20 +35,22 @@
             return "error";
           }
         }
-        // Function to check if permission has "no value"
-        async function checkPermission(name) {
-          try {
-            const permissionStatus = await navigator.permissions.query({ name });
-            return permissionStatus.state; // Returns 'prompt', 'granted', or 'denied' if supported
-          } catch (error) {
-            if (error instanceof TypeError) {
-              return "no value"; // Represents lack of support
-            } else {
-              return "error";
-            }
+      }
+
+      // Function to check if a permission has "no value"
+      async function checkPermission(name) {
+        try {
+          const permissionStatus = await navigator.permissions.query({ name });
+          return permissionStatus.state; // Returns 'prompt', 'granted', or 'denied' if supported
+        } catch (error) {
+          if (error instanceof TypeError) {
+            return "no value"; // Represents lack of support
+          } else {
+            return "error";
           }
         }
       }
+
       // Begin detection logic
       const accelerometer = await checkPermission('accelerometer');
       const topLevelstorage = await checkTopLevelPermission();
@@ -135,16 +137,12 @@
   <div id="permissionStatus">top-level-storage-access: Not checked yet</div>
   <p id='permissions'></p>
   <script>
-
-
-
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
         '/fingerprint/sw.js',
         { scope: '/fingerprint/' }
-      )
+      );
     }
-
   </script>
 </body>
 
