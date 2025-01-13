@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://pwa-demo.github.io/abuse" />
+  <link rel="manifest" href="/abuse/manifest.json">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <title>abuse Example</title>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #temporaryabuse {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>PWA abuse API Experiment</h1>
+  <div id="accelerometer-data" class="abuse-data">Accelerometer Data: Not available</div>
+  <div id="gyroscope-data" class="abuse-data">Gyroscope Data: Not available</div>
+  <div id="magnetometer-data" class="abuse-data">Magnetometer Data: Not available</div>
+
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register(
+        '/abuse/sw.js',
+        { scope: '/abuse/' }
+      );
+    }
+
+
+    // Utility function to update HTML elements
+    function updateData(elementId, data) {
+      document.getElementById(elementId).textContent = data;
+    }
+
+    // Accelerometer API
+    try {
+      const accelerometer = new Accelerometer({ frequency: 50000 });
+      accelerometer.addEventListener('reading', () => {
+        updateData('accelerometer-data', `Accelerometer Data: x=${accelerometer.x}, y=${accelerometer.y}, z=${accelerometer.z}`);
+      });
+      accelerometer.addEventListener('error', (event) => {
+        updateData('accelerometer-data', `Accelerometer Error: ${event.error.message}`);
+      });
+      accelerometer.start();
+    } catch (error) {
+      updateData('accelerometer-data', `Accelerometer API Not Supported: ${error.message}`);
+    }
+
+    // Gyroscope API
+    try {
+      const gyroscope = new Gyroscope({ frequency: 50000 });
+      gyroscope.addEventListener('reading', () => {
+        updateData('gyroscope-data', `Gyroscope Data: x=${gyroscope.x}, y=${gyroscope.y}, z=${gyroscope.z}`);
+      });
+      gyroscope.addEventListener('error', (event) => {
+        updateData('gyroscope-data', `Gyroscope Error: ${event.error.message}`);
+      });
+      gyroscope.start();
+    } catch (error) {
+      updateData('gyroscope-data', `Gyroscope API Not Supported: ${error.message}`);
+    }
+
+    // Magnetometer API
+    try {
+      const magnetometer = new Magnetometer({ frequency: 50000 });
+      magnetometer.addEventListener('reading', () => {
+        updateData('magnetometer-data', `Magnetometer Data: x=${magnetometer.x}, y=${magnetometer.y}, z=${magnetometer.z}`);
+      });
+      magnetometer.addEventListener('error', (event) => {
+        updateData('magnetometer-data', `Magnetometer Error: ${event.error.message}`);
+      });
+      magnetometer.start();
+    } catch (error) {
+      updateData('magnetometer-data', `Magnetometer API Not Supported: ${error.message}`);
+    }
+  </script>
+
+</body>
+
+</html>
