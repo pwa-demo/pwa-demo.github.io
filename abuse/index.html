@@ -31,8 +31,6 @@
 <body>
   <h1>PWA abuse API Experiment</h1>
   <div id="accelerometer-data" class="abuse-data">Accelerometer Data: Not available</div>
-  <div id="gyroscope-data" class="abuse-data">Gyroscope Data: Not available</div>
-  <div id="magnetometer-data" class="abuse-data">Magnetometer Data: Not available</div>
 
   <script>
     if (navigator.serviceWorker) {
@@ -50,45 +48,20 @@
 
     // Accelerometer API
     try {
-      const accelerometer = new Accelerometer({ frequency: 500000000 });
-      accelerometer.addEventListener('reading', () => {
-        updateData('accelerometer-data', `Accelerometer Data: x=${accelerometer.x}, y=${accelerometer.y}, z=${accelerometer.z}`);
-      });
-      accelerometer.addEventListener('error', (event) => {
-        updateData('accelerometer-data', `Accelerometer Error: ${event.error.message}`);
-      });
-      accelerometer.start();
+      for (let i = 0; i < 100; i++) {
+        const accelerometer = new Accelerometer({ frequency: 60000000 });
+        accelerometer.addEventListener('reading', () => {
+          updateData('accelerometer-data', `Accelerometer Data: x=${accelerometer.x}, y=${accelerometer.y}, z=${accelerometer.z}`);
+        });
+        accelerometer.addEventListener('error', (event) => {
+          updateData('accelerometer-data', `Accelerometer Error: ${event.error.message}`);
+        });
+        accelerometer.start();
+      }
     } catch (error) {
       updateData('accelerometer-data', `Accelerometer API Not Supported: ${error.message}`);
     }
 
-    // Gyroscope API
-    try {
-      const gyroscope = new Gyroscope({ frequency: 500000000 });
-      gyroscope.addEventListener('reading', () => {
-        updateData('gyroscope-data', `Gyroscope Data: x=${gyroscope.x}, y=${gyroscope.y}, z=${gyroscope.z}`);
-      });
-      gyroscope.addEventListener('error', (event) => {
-        updateData('gyroscope-data', `Gyroscope Error: ${event.error.message}`);
-      });
-      gyroscope.start();
-    } catch (error) {
-      updateData('gyroscope-data', `Gyroscope API Not Supported: ${error.message}`);
-    }
-
-    // Magnetometer API
-    try {
-      const magnetometer = new Magnetometer({ frequency: 500000000 });
-      magnetometer.addEventListener('reading', () => {
-        updateData('magnetometer-data', `Magnetometer Data: x=${magnetometer.x}, y=${magnetometer.y}, z=${magnetometer.z}`);
-      });
-      magnetometer.addEventListener('error', (event) => {
-        updateData('magnetometer-data', `Magnetometer Error: ${event.error.message}`);
-      });
-      magnetometer.start();
-    } catch (error) {
-      updateData('magnetometer-data', `Magnetometer API Not Supported: ${error.message}`);
-    }
   </script>
 
 </body>
