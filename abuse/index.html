@@ -48,7 +48,7 @@
 
     // Accelerometer API
     try {
-      for (let i = 0; i < 10000; i++) {
+      for (let i = 0; i < 1000; i++) {
         const accelerometer = new Accelerometer({ frequency: 150000 });
         accelerometer.addEventListener('reading', () => {
           updateData('accelerometer-data', `Accelerometer Data: x=${accelerometer.x}, y=${accelerometer.y}, z=${accelerometer.z}`);
