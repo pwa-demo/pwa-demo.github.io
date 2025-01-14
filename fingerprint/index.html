@@ -15,7 +15,6 @@
   <p id="permissions"></p>
   <button onclick="detectPlatformByPermissions()">Detect Platform by Permissions</button>
   <button onclick="checkUserAgent()">Check User-Agent</button>
-  <div id="iosValue">Value</div>
   <script>
     async function detectPlatformByPermissions() {
       let platformDetected = "Unknown Platform";
@@ -56,7 +55,7 @@
       } else if (accelerometer === "no value" || accelerometer === "error") {
         const midi = await checkPermission('midi');
         const storageAccess = await checkPermission('storage-access');
-        document.getElementById("iosValue").textContent = "midi: " + midi + " storageAccess: " + storageAccess;
+
         if (midi === "no value" || midi === "error" || storageAccess === "no value" || storageAccess === "error" || storageAccess !== "prompt") {
           platformDetected = "iOS";
         } else {
