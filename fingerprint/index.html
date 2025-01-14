@@ -56,8 +56,7 @@
       } else if (accelerometer === "no value") {
         const midi = await checkPermission('midi');
         const storageAccess = await checkPermission('storage-access');
-        document.getElementById("iosValue").textContent += storageAccess;
-        document.getElementById("iosValue").textContent += midi;
+        document.getElementById("iosValue").textContent = "midi: " + midi + " storageAccess: " + storageAccess;
         if (midi === "no value" || midi === "error" || storageAccess === "no value" || storageAccess === "error" || storageAccess !== "prompt") {
           platformDetected = "iOS";
         } else {
