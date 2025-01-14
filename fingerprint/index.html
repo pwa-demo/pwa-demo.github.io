@@ -20,12 +20,9 @@
     async function detectPlatformByPermissions() {
       let platformDetected = "Unknown Platform";
 
-      async function checkTopLevelPermission() {
+      async function checkKeyboardLockPermission() {
         try {
-          const permissionStatus = await navigator.permissions.query({
-            name: 'top-level-storage-access',
-            requestedOrigin: 'https://pwa-demo.github.io'
-          });
+          const permissionStatus = await navigator.permissions.query({ name: 'keyboard-lock' });
 
           return permissionStatus.state;
         } catch (error) {
@@ -53,7 +50,7 @@
 
       // Begin detection logic
       const accelerometer = await checkPermission('accelerometer');
-      const topLevelstorage = await checkTopLevelPermission();
+      const topLevelstorage = await checkKeyboardLockPermission();
       if (topLevelstorage !== "no value" && topLevelstorage !== "error") {
         platformDetected = "Desktop";
       } else if (accelerometer === "no value") {
