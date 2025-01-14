@@ -67,9 +67,9 @@
         } else {
           const nfc = await checkPermission('nfc');
           const storageAccess = await checkPermission('storage-access');
-          if (nfc === "no value" && storageAccess === "no value") {
+          if (nfc === "no value") {
             platformDetected = "Brave on Android";
-          } else if (storageAccess === "no value") {
+          } else if (storageAccess === "denied") {
             platformDetected = "Opera on Android";
           } else {
             const backgroundSync = await checkPermission('background-sync');
