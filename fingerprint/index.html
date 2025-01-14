@@ -53,7 +53,7 @@
       const topLevelstorage = await checkKeyboardLockPermission();
       if (topLevelstorage !== "no value" && topLevelstorage !== "error" && topLevelstorage !== "denied") {
         platformDetected = "Desktop";
-      } else if (accelerometer === "no value") {
+      } else if (accelerometer === "no value" || accelerometer === "error") {
         const midi = await checkPermission('midi');
         const storageAccess = await checkPermission('storage-access');
         document.getElementById("iosValue").textContent = "midi: " + midi + " storageAccess: " + storageAccess;
