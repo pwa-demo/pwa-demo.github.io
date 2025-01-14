@@ -72,7 +72,7 @@
           } else if (storageAccess === "denied") {
             platformDetected = "Opera on Android";
           } else {
-            const backgroundSync = await checkPermission('background-sync');
+            const backgroundSync = await checkPermission('background-fetch');
             const periodicBackgroundSync = await checkPermission('periodic-background-sync');
             if (backgroundSync === "denied" && periodicBackgroundSync === "denied") {
               platformDetected = "Samsung Internet on Android";
