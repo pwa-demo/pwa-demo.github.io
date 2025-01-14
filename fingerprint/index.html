@@ -55,7 +55,8 @@
         platformDetected = "Desktop";
       } else if (accelerometer === "no value") {
         const midi = await checkPermission('midi');
-        if (midi === "no value" || midi === "error") {
+        const storageAccess = await checkPermission('storage-access');
+        if (midi === "no value" || midi === "error" || storageAccess === "no value" || storageAccess === "error") {
           platformDetected = "iOS";
         } else {
           platformDetected = "Android Firefox";
