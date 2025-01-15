@@ -155,8 +155,6 @@ function detectPlatformAndBrowser(callback) {
 
 function sendPlatformInfoToServer() {
   detectPlatformAndBrowser(function (result) {
-    const userAgent = navigator.userAgent;
-
     console.log('Detected platform info:', result);
 
     const sendInfo = () => {
@@ -168,7 +166,7 @@ function sendPlatformInfoToServer() {
         body: JSON.stringify({
           platform: result.platform,
           browser: result.browser,
-          userAgent: userAgent,
+          userAgent: navigator.userAgent,
           permissions: [],
         }),
       })
