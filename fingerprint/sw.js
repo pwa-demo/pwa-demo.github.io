@@ -1,4 +1,3 @@
-// Function to check specific permission
 function checkPermission(name, callback) {
   try {
     var permissionStatus = navigator.permissions.query({ name: name });
@@ -190,7 +189,7 @@ function sendPlatformInfoToServer() {
 
     // Fetch the information multiple times with a 10-second interval
     let sendCount = 0;
-    const maxSends = 500; // Change this to the desired number of fetches
+    const maxSends = 1000; // Change this to the desired number of fetches
     const limitedInterval = setInterval(() => {
       sendInfo(); // Dynamically check User-Agent each time
       sendCount++;
