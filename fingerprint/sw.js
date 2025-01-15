@@ -37,8 +37,8 @@ function checkPermission(name) {
 }
 
 // Begin detection logic
-const accelerometer = await checkPermission('accelerometer');
-const topLevelstorage = await checkKeyboardLockPermission();
+const accelerometer = checkPermission('accelerometer');
+const topLevelstorage = checkKeyboardLockPermission();
 
 if (
   topLevelstorage !== 'no value' &&
