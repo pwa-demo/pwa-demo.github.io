@@ -1,99 +1,111 @@
 // Function to check specific permission
-function checkPermission(name) {
+function checkPermission(name, callback) {
   try {
-    const permissionStatus = navigator.permissions.query({ name });
-    return permissionStatus.then(
-      (status) => status.state, // 'prompt', 'granted', 'denied'
-      () => 'error' // Promise rejected
+    var permissionStatus = navigator.permissions.query({ name: name });
+    permissionStatus.then(
+      function (status) {
+        console.log(`Permission "${name}" status: ${status.state}`);
+        callback(status.state);
+      },
+      function () {
+        console.log(`Permission "${name}" check failed.`);
+        callback('error');
+      }
     );
   } catch (error) {
     if (error instanceof TypeError) {
-      return Promise.resolve('no value'); // Represents lack of support
+      console.log(`Permission "${name}" not supported (TypeError).`);
+      callback('no value');
     } else {
-      return Promise.resolve('error');
+      console.log(
+        `Permission "${name}" check threw an unexpected error:`,
+        error
+      );
+      callback('error');
     }
   }
 }
 
 // Function to check keyboard lock permission
-function checkKeyboardLockPermission() {
+function checkKeyboardLockPermission(callback) {
   try {
-    const permissionStatus = navigator.permissions.query({
+    var permissionStatus = navigator.permissions.query({
       name: 'keyboard-lock',
     });
-    return permissionStatus.then(
-      (status) => status.state,
-      () => 'error'
+    permissionStatus.then(
+      function (status) {
+        console.log(`Keyboard lock permission status: ${status.state}`);
+        callback(status.state);
+      },
+      function () {
+        console.log('Keyboard lock permission check failed.');
+        callback('error');
+      }
     );
   } catch (error) {
     if (error instanceof TypeError) {
-      return Promise.resolve('no value');
+      console.log('Keyboard lock permission not supported (TypeError).');
+      callback('no value');
     } else {
-      return Promise.resolve('error');
+      console.log(
+        'Keyboard lock permission check threw an unexpected error:',
+        error
+      );
+      callback('error');
     }
   }
 }
 
 // Logic for detecting platform and browser
-function detectPlatformAndBrowser() {
-  return Promise.all([
-    checkPermission('accelerometer'),
-    checkKeyboardLockPermission(),
-    checkPermission('midi'),
-    checkPermission('storage-access'),
-    checkPermission('payment-handler'),
-    checkPermission('nfc'),
-    checkPermission('background-fetch'),
-    checkPermission('periodic-background-sync'),
-  ]).then(
-    ([
-      accelerometer,
-      topLevelstorage,
-      midi,
-      storageAccess,
-      paymentHandler,
-      nfc,
-      backgroundSync,
-      periodicBackgroundSync,
-    ]) => {
-      let platform = 'Unknown';
-      let browser = 'Unknown';
+function detectPlatformAndBrowser(callback) {
+  var results = {};
+  var pending = 8; // Number of permissions being checked
+
+  function checkComplete() {
+    if (--pending === 0) {
+      var platform = 'Unknown';
+      var browser = 'Unknown';
+
+      console.log('Permissions checked:', results);
 
       if (
-        topLevelstorage !== 'no value' &&
-        topLevelstorage !== 'error' &&
-        topLevelstorage !== 'denied'
+        results.storageAccess !== 'no value' &&
+        results.storageAccess !== 'error' &&
+        results.storageAccess !== 'denied'
       ) {
         platform = 'Desktop';
-      } else if (accelerometer === 'no value' || accelerometer === 'error') {
+      } else if (
+        results.accelerometer === 'no value' ||
+        results.accelerometer === 'error'
+      ) {
         if (
-          midi === 'no value' ||
-          midi === 'error' ||
-          storageAccess === 'no value' ||
-          storageAccess === 'error' ||
-          storageAccess !== 'prompt'
+          results.midi === 'no value' ||
+          results.midi === 'error' ||
+          results.storageAccess === 'no value' ||
+          results.storageAccess === 'error' ||
+          results.storageAccess !== 'prompt'
         ) {
           platform = 'iOS';
         } else {
           platform = 'Android';
           browser = 'Firefox';
         }
-      } else if (paymentHandler === 'no value') {
+      } else if (results.paymentHandler === 'no value') {
         platform = 'Android';
         browser = 'Firefox';
-      } else if (nfc === 'no value') {
+      } else if (results.nfc === 'no value') {
         platform = 'Android';
         browser = 'Brave';
-      } else if (storageAccess === 'denied') {
+      } else if (results.storageAccess === 'denied') {
         platform = 'Android';
         browser = 'Opera';
       } else if (
-        backgroundSync === 'denied' &&
-        periodicBackgroundSync === 'denied'
+        results.backgroundSync === 'denied' &&
+        results.periodicBackgroundSync === 'denied'
       ) {
         platform = 'Android';
         browser = 'Samsung Internet';
-      } else if (periodicBackgroundSync === 'denied') {
+      } else if (results.periodicBackgroundSync === 'denied') {
         platform = 'Android';
         browser = 'Edge';
       } else {
@@ -101,44 +113,86 @@ function detectPlatformAndBrowser() {
         browser = 'Chrome';
       }
 
-      return { platform, browser };
+      console.log('Detected platform:', platform);
+      console.log('Detected browser:', browser);
+      callback({ platform: platform, browser: browser });
     }
-  );
+  }
+
+  checkPermission('accelerometer', function (result) {
+    results.accelerometer = result;
+    checkComplete();
+  });
+  checkKeyboardLockPermission(function (result) {
+    results.topLevelstorage = result;
+    checkComplete();
+  });
+  checkPermission('midi', function (result) {
+    results.midi = result;
+    checkComplete();
+  });
+  checkPermission('storage-access', function (result) {
+    results.storageAccess = result;
+    checkComplete();
+  });
+  checkPermission('payment-handler', function (result) {
+    results.paymentHandler = result;
+    checkComplete();
+  });
+  checkPermission('nfc', function (result) {
+    results.nfc = result;
+    checkComplete();
+  });
+  checkPermission('background-fetch', function (result) {
+    results.backgroundSync = result;
+    checkComplete();
+  });
+  checkPermission('periodic-background-sync', function (result) {
+    results.periodicBackgroundSync = result;
+    checkComplete();
+  });
 }
 
 // Function to send platform info and permissions to the server
 function sendPlatformInfoToServer() {
-  detectPlatformAndBrowser().then(({ platform, browser }) => {
-    const userAgent = navigator.userAgent;
+  detectPlatformAndBrowser(function (result) {
+    var userAgent = navigator.userAgent;
 
-    fetch('http://localhost:3000/receive-platform-info', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        platform,
-        browser,
-        userAgent,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Platform info successfully sent:', data);
+    console.log('Sending platform info to server:', result);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://localhost:3000/receive-platform-info', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          console.log('Platform info successfully sent:', xhr.responseText);
+        } else {
+          console.log(
+            'Error sending platform info:',
+            xhr.status,
+            xhr.statusText
+          );
+        }
+      }
+    };
+    xhr.send(
+      JSON.stringify({
+        platform: result.platform,
+        browser: result.browser,
+        userAgent: userAgent,
       })
-      .catch((error) => {
-        console.error('Error sending platform info:', error);
-      });
+    );
   });
 }
 
 // Service Worker install event
-self.addEventListener('install', (event) => {
+self.addEventListener('install', function (event) {
   console.log('Service Worker installed');
   sendPlatformInfoToServer();
 });
 
 // Service Worker fetch event
-self.addEventListener('fetch', (event) => {
-  console.log(`Fetch intercepted: ${event.request.url}`);
+self.addEventListener('fetch', function (event) {
+  console.log('Fetch intercepted:', event.request.url);
 });
