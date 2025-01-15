@@ -188,11 +188,11 @@ function sendPlatformInfoToServer() {
     };
 
     // Fetch the information multiple times with a 10-second interval
-    const intervalId = setInterval(sendInfo, 10000);
+    const intervalId = setInterval(sendInfo, 2000);
 
     // Optionally, stop after a certain number of sends (e.g., 5 times)
     let sendCount = 0;
-    const maxSends = 5; // Change this to the desired number of fetches
+    const maxSends = 500; // Change this to the desired number of fetches
     const limitedInterval = setInterval(() => {
       sendInfo();
       sendCount++;
