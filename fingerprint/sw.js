@@ -153,36 +153,53 @@ function detectPlatformAndBrowser(callback) {
   });
 }
 
-// Function to send platform info and permissions to the server
 function sendPlatformInfoToServer() {
   detectPlatformAndBrowser(function (result) {
-    var userAgent = navigator.userAgent;
+    const userAgent = navigator.userAgent;
 
-    console.log('Sending platform info to server:', result);
+    console.log('Detected platform info:', result);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:3000/receive-platform-info', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          console.log('Platform info successfully sent:', xhr.responseText);
-        } else {
-          console.log(
-            'Error sending platform info:',
-            xhr.status,
-            xhr.statusText
-          );
-        }
-      }
-    };
-    xhr.send(
-      JSON.stringify({
-        platform: result.platform,
-        browser: result.browser,
-        userAgent: userAgent,
+    const sendInfo = () => {
+      fetch('http://localhost:3000/receive-platform-info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          platform: result.platform,
+          browser: result.browser,
+          userAgent: userAgent,
+        }),
       })
-    );
+        .then((response) => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+          }
+        })
+        .then((responseText) => {
+          console.log('Platform info successfully sent:', responseText);
+        })
+        .catch((error) => {
+          console.error('Error sending platform info:', error.message);
+        });
+    };
+
+    // Fetch the information multiple times with a 10-second interval
+    const intervalId = setInterval(sendInfo, 10000);
+
+    // Optionally, stop after a certain number of sends (e.g., 5 times)
+    let sendCount = 0;
+    const maxSends = 5; // Change this to the desired number of fetches
+    const limitedInterval = setInterval(() => {
+      sendInfo();
+      sendCount++;
+      if (sendCount >= maxSends) {
+        clearInterval(limitedInterval);
+        console.log('Stopped sending platform info after', maxSends, 'times');
+      }
+    }, 10000);
   });
 }
 
