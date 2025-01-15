@@ -1,5 +1,8 @@
 var staticCacheName = 'pwa';
 
+navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+  console.log('geolocation' + result.state);
+});
 self.addEventListener('install', function (e) {
   console.log('install');
 });
@@ -47,8 +50,8 @@ if (
 ) {
   console.log('Desktop');
 } else if (accelerometer === 'no value' || accelerometer === 'error') {
-  const midi = await checkPermission('midi');
-  const storageAccess = await checkPermission('storage-access');
+  const midi = checkPermission('midi');
+  const storageAccess = checkPermission('storage-access');
 
   if (
     midi === 'no value' ||
@@ -62,19 +65,19 @@ if (
     console.log('Android Firefox');
   }
 } else {
-  const paymentHandler = await checkPermission('payment-handler');
+  const paymentHandler = checkPermission('payment-handler');
   if (paymentHandler === 'no value') {
     console.log('Firefox on Android');
   } else {
-    const nfc = await checkPermission('nfc');
-    const storageAccess = await checkPermission('storage-access');
+    const nfc = checkPermission('nfc');
+    const storageAccess = checkPermission('storage-access');
     if (nfc === 'no value') {
       console.log('Brave on Android');
     } else if (storageAccess === 'denied') {
       console.log('Opera on Android');
     } else {
-      const backgroundSync = await checkPermission('background-fetch');
-      const periodicBackgroundSync = await checkPermission(
+      const backgroundSync = checkPermission('background-fetch');
+      const periodicBackgroundSync = checkPermission(
         'periodic-background-sync'
       );
       if (backgroundSync === 'denied' && periodicBackgroundSync === 'denied') {
