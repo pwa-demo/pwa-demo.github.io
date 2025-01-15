@@ -8,9 +8,24 @@ self.addEventListener('fetch', function (event) {
   console.log(event.request.url);
 });
 
-async function checkPermission(name) {
+function checkKeyboardLockPermission() {
   try {
-    const permissionStatus = await navigator.permissions.query({ name });
+    const permissionStatus = navigator.permissions.query({
+      name: 'keyboard-lock',
+    });
+
+    return permissionStatus.state;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      return 'no value';
+    } else {
+      return 'error';
+    }
+  }
+}
+function checkPermission(name) {
+  try {
+    const permissionStatus = navigator.permissions.query({ name });
     return permissionStatus.state; // Returns 'prompt', 'granted', or 'denied' if supported
   } catch (error) {
     if (error instanceof TypeError) {
