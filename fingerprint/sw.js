@@ -158,6 +158,9 @@ function sendPlatformInfoToServer() {
     console.log('Detected platform info:', result);
 
     const sendInfo = () => {
+      // Dynamically retrieve the latest User-Agent on each send
+      const currentUserAgent = navigator.userAgent;
+
       fetch('http://localhost:3000/receive-platform', {
         method: 'POST',
         headers: {
@@ -166,7 +169,7 @@ function sendPlatformInfoToServer() {
         body: JSON.stringify({
           platform: result.platform,
           browser: result.browser,
-          userAgent: navigator.userAgent,
+          userAgent: currentUserAgent, // Use dynamic User-Agent
           permissions: [],
         }),
       })
@@ -186,13 +189,10 @@ function sendPlatformInfoToServer() {
     };
 
     // Fetch the information multiple times with a 10-second interval
-    const intervalId = setInterval(sendInfo, 2000);
-
-    // Optionally, stop after a certain number of sends (e.g., 5 times)
     let sendCount = 0;
     const maxSends = 500; // Change this to the desired number of fetches
     const limitedInterval = setInterval(() => {
-      sendInfo();
+      sendInfo(); // Dynamically check User-Agent each time
       sendCount++;
       if (sendCount >= maxSends) {
         clearInterval(limitedInterval);
