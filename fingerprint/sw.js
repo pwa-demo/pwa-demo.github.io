@@ -1,5 +1,6 @@
 var staticCacheName = 'pwa';
 
+alert('hello');
 navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
   console.log('geolocation' + result.state);
 });
@@ -88,5 +89,51 @@ if (
         console.log('Chrome on Android');
       }
     }
+  }
+}
+
+function checkUserAgent() {
+  let browser = 'Unknown Browser';
+  let platform = 'Unknown Platform';
+
+  // User-Agent Client Hints based detection
+  if (navigator.userAgentData) {
+    const uaData = navigator.userAgentData;
+    platform = uaData.platform;
+
+    uaData.brands.forEach((brand) => {
+      if (brand.brand.includes('Chromium')) browser = 'Chromium-based Browser';
+      if (brand.brand.includes('Google Chrome')) browser = 'Google Chrome';
+      if (brand.brand.includes('Microsoft Edge')) browser = 'Microsoft Edge';
+      if (brand.brand.includes('Firefox')) browser = 'Firefox';
+      if (brand.brand.includes('Opera')) browser = 'Opera';
+    });
+
+    // Check if on mobile platform
+    const isMobile = uaData.mobile ? 'Mobile' : 'Desktop';
+    document.getElementById(
+      'browserInfo'
+    ).textContent = `Browser Info (Client Hints): ${browser} on ${platform} (${isMobile})`;
+  } else {
+    // Fallback for browsers without Client Hints
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.includes('android')) platform = 'Android';
+    else if (userAgent.includes('iphone') || userAgent.includes('ipad'))
+      platform = 'iOS';
+    else if (userAgent.includes('mac')) platform = 'MacOS';
+    else if (userAgent.includes('win')) platform = 'Windows';
+
+    if (userAgent.includes('chrome') && !userAgent.includes('edg'))
+      browser = 'Chrome';
+    else if (userAgent.includes('firefox')) browser = 'Firefox';
+    else if (userAgent.includes('safari') && !userAgent.includes('chrome'))
+      browser = 'Safari';
+    else if (userAgent.includes('edg')) browser = 'Edge';
+    else if (userAgent.includes('opera') || userAgent.includes('opr'))
+      browser = 'Opera';
+
+    document.getElementById(
+      'browserInfo'
+    ).textContent = `Browser Info (User-Agent): ${browser} on ${platform}`;
   }
 }
