@@ -160,7 +160,7 @@ function sendPlatformInfoToServer() {
     console.log('Detected platform info:', result);
 
     const sendInfo = () => {
-      fetch('http://localhost:3000/receive-platform-info', {
+      fetch('http://localhost:3000/receive-platform', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,6 +169,7 @@ function sendPlatformInfoToServer() {
           platform: result.platform,
           browser: result.browser,
           userAgent: userAgent,
+          permissions: [],
         }),
       })
         .then((response) => {
