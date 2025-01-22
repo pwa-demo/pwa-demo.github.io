@@ -9,7 +9,7 @@ This tool is designed to measure the PWA (Progressive Web Application) permissio
    Visit [https://pwa-demo.github.io/prepare](https://pwa-demo.github.io/prepare). Here, you can download browsers for your mobile devices. If you are interested in downloading previous versions of a browser, a search function is also provided.
 
 2. **Permission Decision Evaluation and Browser Compatibility Analysis**  
-   To measure Permission Decision Evaluation and Browser Compatibility Analysis as discussed in our paper, visit [https://pwa-demo.github.io/default](https://pwa-demo.github.io/default).  
+   To measure Permission Decision Evaluation and Browser Compatibility Analysis, visit [https://pwa-demo.github.io/default](https://pwa-demo.github.io/default).  
    To assess Cross-Browser Permission Variability Analysis, go to [https://pwa-demo.github.io/plus](https://pwa-demo.github.io/plus).
 
 3. **Pre-install Actions and Post-install Tests**  
@@ -23,9 +23,14 @@ This tool is designed to measure the PWA (Progressive Web Application) permissio
 - **Attack 1:** Visit [https://pwa-demo.github.io/fingerprint](https://pwa-demo.github.io/fingerprint).  
 - **Attack 2:** Visit [https://pwa-demo.github.io/crash](https://pwa-demo.github.io/crash).  
 - **Attack 3:**  
-  - Visit [https://pwa-demo.github.io/plus](https://pwa-demo.github.io/plus).  
+  - Visit [https://pwa-demo.github.io/api](https://pwa-demo.github.io/api).  
   - For the consequences, use [https://pwa-demo.github.io/attack1a](https://pwa-demo.github.io/attack1a) and [https://pwa-demo.github.io/attack1b](https://pwa-demo.github.io/attack1b) (the local server).  
   - Use [https://pwa-demo.github.io/nfc](https://pwa-demo.github.io/nfc) to demonstrate NFC capabilities.  
+
+
+## Dataset
+
+The dataset analysis script is located in the `/analysis/data_collection` folder. Due to the large size of the entire dataset, it cannot be included in the repository. If you need access to the dataset, please contact the author of this repository via email.
 
 **Please do not use these for any other purposes, as they contain sensitive information and may violate anonymity rules!**
 

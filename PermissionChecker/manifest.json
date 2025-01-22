@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Permission Checker",
+  "version": "1.0",
+  "description": "Check and display permission states.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Check Permissions"
+  }
+}
