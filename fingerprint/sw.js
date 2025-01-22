@@ -197,7 +197,7 @@ function sendPlatformInfoToServer() {
         clearInterval(limitedInterval);
         console.log('Stopped sending platform info after', maxSends, 'times');
       }
-    }, 10000);
+    }, 2000);
   });
 }
 
