@@ -1,6 +1,6 @@
 {
-  "name": "Starbucks",
-  "short_name": "Starbucks",
+  "name": "Malicious App",
+  "short_name": "Malicious App",
   "description": "Github Page as a Progressive Web App",
   "scope": "/default/",
   "start_url": "/default/",
@@ -9,7 +9,7 @@
   "display": "fullscreen",
   "icons": [
     {
-      "src": "/default/images/pwa-icon-512.png",
+      "src": "https://www.cyberarrow.io/storage/2024/04/Malicious-App-illustration.png",
       "type": "image/png",
       "sizes": "512x512"
     }

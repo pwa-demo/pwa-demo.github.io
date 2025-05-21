@@ -1,6 +1,6 @@
 {
-  "name": "Star",
-  "short_name": "Star",
+  "name": "Benign App",
+  "short_name": "Benign App",
   "description": "a Progressive Web App",
   "scope": "/api/",
   "start_url": "/api/",
